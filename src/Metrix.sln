@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Common", "Io.Juenger.Common\Io.Juenger.Common.csproj", "{52D99C57-016F-4235-A59E-98E8D9617CD0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab", "Io.Juenger.Scrum.GitLab\Io.Juenger.Scrum.GitLab.csproj", "{00F484F4-5FD9-45AA-8037-60CBA569FDA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Contracts", "Io.Juenger.Scrum.GitLab.Contracts\Io.Juenger.Scrum.GitLab.Contracts.csproj", "{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Demo", "Io.Juenger.Scrum.GitLab.Demo\Io.Juenger.Scrum.GitLab.Demo.csproj", "{F505030D-D57F-4981-BA5F-0F5A6117760C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Tests", "Io.Juenger.Scrum.GitLab.Tests\Io.Juenger.Scrum.GitLab.Tests.csproj", "{3D6FCF72-5D60-47ED-8929-844B60348B90}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{52D99C57-016F-4235-A59E-98E8D9617CD0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52D99C57-016F-4235-A59E-98E8D9617CD0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52D99C57-016F-4235-A59E-98E8D9617CD0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52D99C57-016F-4235-A59E-98E8D9617CD0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
