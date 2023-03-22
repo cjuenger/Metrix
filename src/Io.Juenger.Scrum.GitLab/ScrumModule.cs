@@ -1,7 +1,8 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Autofac;
 using Io.Juenger.Autoconf;
-using Io.Juenger.Scrum.GitLab.Config;
+using Io.Juenger.Scrum.GitLab.Configs;
+using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Contracts.Services;
 using Io.Juenger.Scrum.GitLab.Factories.Domain;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;

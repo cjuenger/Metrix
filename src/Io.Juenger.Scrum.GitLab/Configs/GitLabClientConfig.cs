@@ -1,6 +1,6 @@
-﻿namespace Io.Juenger.Scrum.GitLab.Config
+﻿namespace Io.Juenger.Scrum.GitLab.Configs
 {
-    internal interface IGitLabClientConfig
+    internal class GitLabClientConfig : IGitLabClientConfig
     {
         public string AccessToken { get; set; }
         

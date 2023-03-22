@@ -1,7 +1,6 @@
-﻿using System.Collections.Generic;
-using Io.Juenger.Scrum.GitLab.Contracts.Values;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Values;
 
-namespace Io.Juenger.Scrum.GitLab.Config
+namespace Io.Juenger.Scrum.GitLab.Configs
 {
     internal class ItemParserConfig : IItemParserConfig
     {

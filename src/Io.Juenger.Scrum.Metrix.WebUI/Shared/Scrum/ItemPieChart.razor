@@ -1,0 +1,11 @@
+﻿@using Radzen.Blazor
+
+<RadzenCard Style="width:500px;">
+
+    <h3>@Title Color</h3>
+    
+    <RadzenChart>
+        <RadzenPieSeries Data="@_itemCategories" CategoryProperty="Category" ValueProperty="Count" />
+    </RadzenChart>
+    
+</RadzenCard>

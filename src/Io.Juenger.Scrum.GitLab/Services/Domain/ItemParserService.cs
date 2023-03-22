@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Io.Juenger.GitLabClient.Model;
-using Io.Juenger.Scrum.GitLab.Config;
+using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
 

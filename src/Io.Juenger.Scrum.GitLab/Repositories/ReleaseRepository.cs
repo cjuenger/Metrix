@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
+using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;
 using Io.Juenger.Scrum.GitLab.Services.Infrastructure;
 

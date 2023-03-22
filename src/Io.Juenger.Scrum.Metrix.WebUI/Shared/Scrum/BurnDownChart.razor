@@ -1,0 +1,70 @@
+﻿@using Radzen.Blazor
+
+<RadzenCard Style="width:1010px;">
+
+    <h3>@Title Burn-Down-Chart</h3>
+    
+    <RadzenChart>
+
+        @* Burn down *@
+        <RadzenLineSeries Smooth="@Smooth"
+                          Data="@BurnDown?.BurnDownSeries"
+                          Title="Burn Down"
+                          CategoryProperty="X"
+                          ValueProperty="Y">
+            <RadzenMarkers MarkerType="MarkerType.None"/>
+        </RadzenLineSeries>
+        
+        @* Average estimate *@
+        <RadzenLineSeries Smooth="@Smooth"
+                          Data="@BurnDown?.EstimateSeries"
+                          CategoryProperty="X"
+                          Title="Estimate"
+                          LineType="LineType.Dashed"
+                          ValueProperty="Y">
+            <RadzenMarkers MarkerType="MarkerType.None"/>
+            
+        </RadzenLineSeries>
+        
+        @* Best estimate *@
+        <RadzenLineSeries Smooth="@Smooth"
+                          Data="@BurnDown?.BestEstimateSeries"
+                          CategoryProperty="X"
+                          Title="Best Estimate"
+                          LineType="LineType.Dashed"
+                          ValueProperty="Y">
+            <RadzenMarkers MarkerType="MarkerType.None"/>
+                    
+        </RadzenLineSeries>
+
+        @* Worst estimate *@
+        <RadzenLineSeries Smooth="@Smooth"
+                          Data="@BurnDown?.WorstEstimateSeries"
+                          CategoryProperty="X"
+                          Title="Worst Estimate"
+                          LineType="LineType.Dashed"
+                          ValueProperty="Y">
+            <RadzenMarkers MarkerType="MarkerType.None"/>
+                            
+        </RadzenLineSeries>
+        
+        @* Due line *@
+        <RadzenLineSeries Smooth="@Smooth"
+                          Data="@_dueLine"
+                          CategoryProperty="X"
+                          Title="Due Date"
+                          LineType="LineType.Dashed"
+                          ValueProperty="Y">
+            <RadzenMarkers MarkerType="MarkerType.None"/>
+                            
+        </RadzenLineSeries>
+        
+        <RadzenCategoryAxis Padding="20" FormatString="{0:MMM}"/>
+
+        <RadzenValueAxis Max="@_maxYValue" Min="0" Step="5">
+            <RadzenGridLines Visible="true"/>
+            <RadzenAxisTitle Text="Story Points"/>
+        </RadzenValueAxis>
+    </RadzenChart>
+    
+</RadzenCard>

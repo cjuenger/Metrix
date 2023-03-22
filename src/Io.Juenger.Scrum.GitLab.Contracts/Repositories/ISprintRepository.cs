@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 
-namespace Io.Juenger.Scrum.GitLab.Repositories;
+namespace Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 
-internal interface ISprintRepository
+public interface ISprintRepository
 {
     Task<ISprintAggregate> LoadSprintByIdAsync(
-        string projectId, 
+        string productId, 
         int sprintId,
         CancellationToken ct = default);
 
     Task<IReadOnlyList<ISprintAggregate>> LoadSprintsAsync(
-        string projectId, 
+        string productId, 
         CancellationToken ct = default);
 
     Task<ISprintAggregate> LoadLatestSprintAsync(
-        string projectId, 
+        string productId, 
         CancellationToken ct = default);
 }

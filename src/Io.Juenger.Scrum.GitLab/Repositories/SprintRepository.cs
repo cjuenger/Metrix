@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Aggregates;
-using Io.Juenger.Scrum.GitLab.Config;
+using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
+using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;
 using Io.Juenger.Scrum.GitLab.Services.Infrastructure;
 using Microsoft.Extensions.Logging;

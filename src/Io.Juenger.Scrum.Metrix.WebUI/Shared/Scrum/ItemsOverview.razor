@@ -1,0 +1,23 @@
+﻿@using Radzen.Blazor
+@using Io.Juenger.Scrum.GitLab.Contracts.Entities
+
+<RadzenCard Style="width:500px; height:600px;">
+    
+    <h3 class="card-title">@Title</h3>
+    
+    <br>
+    
+    <div class="row">
+        <b class="col">Stories: @(_countOfStories)</b>
+        <b class="col">Bugs: @(_countOfBugs)</b>
+        <b class="col">Others: @(_countOfOthers)</b>
+        <b class="col">Total: @(_totalCount)</b>
+    </div>
+    
+    <RadzenDataList class="overflow-auto" Style="padding-left: 10px; padding-right: 10px" WrapItems="true" Data="@Items" TItem="ItemEntity">
+        <Template Context="item">
+            <BacklogItem Item="@item"/>
+        </Template>
+    </RadzenDataList>
+    
+</RadzenCard>

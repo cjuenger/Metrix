@@ -1,0 +1,23 @@
+﻿@using Radzen.Blazor
+
+@page "/SprintReport"
+<h3>Sprint Report</h3>
+
+<RadzenDropDown AllowClear="true"
+                Data="@_sprints"
+                TValue="SprintInfo"
+                TextProperty="Name"
+                Change="@OnChange" 
+                @bind-value="_selectedSprintInfo"
+                Placeholder="Select..."
+                Style="width:500px;"/>
+
+<div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap">
+    <BurnDownChart Stories="@Stories" Title="Sprint" DueDate="@_endTime"/>
+</div>
+
+<div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
+    <ItemsOverview Title="Completed" Items="@ClosedItems"/>
+    <ItemsOverview Title="Open" Items="@OpenItems"/>
+    <ItemPieChart Items="@TotalItems" Title="Sprint"/>
+</div>

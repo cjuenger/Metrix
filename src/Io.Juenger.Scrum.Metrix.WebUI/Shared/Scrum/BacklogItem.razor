@@ -1,0 +1,32 @@
+﻿@using Radzen.Blazor
+@using Io.Juenger.Scrum.GitLab.Contracts.Entities
+
+<RadzenCard Style="width: 100%; padding-top: 5px; padding-right: 5px; ">
+    <div style="text-align: start">@Item.Title</div>
+    
+    @* Adding story points badge, if story points are available. *@
+    @if (Item is StoryEntity { StoryPoints: { } } story)
+    {
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-info">
+            @story.StoryPoints SP
+        </span>
+    }
+    
+    @* Item type badge *@
+    <div style="display: flex; margin-top: 5px;">
+
+        @switch (Item)
+        {
+            case BugEntity:
+                <div class="badge bg-danger rounded-pill" style="text-align: start">Bug</div>
+                break;
+            case StoryEntity:
+                <div class="badge bg-primary rounded-pill" style="text-align: start">Story</div>
+                break;
+            default:
+                <div class="badge bg-secondary rounded-pill" style="text-align: start">Other</div>
+                break;
+        }
+
+    </div>
+</RadzenCard>

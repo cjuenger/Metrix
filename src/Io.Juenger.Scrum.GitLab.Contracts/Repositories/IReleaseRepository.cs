@@ -1,22 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 
-namespace Io.Juenger.Scrum.GitLab.Repositories;
+namespace Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 
-internal interface IReleaseRepository
+public interface IReleaseRepository
 {
     Task<IReadOnlyList<IReleaseAggregate>> LoadReleasesAsync(
-        string projectId, 
+        string productId, 
         CancellationToken ct = default);
 
     Task<IReleaseAggregate> LoadReleaseByIdAsync(
-        string projectId, 
+        string productId, 
         int releaseId,
         CancellationToken ct = default);
 
     Task<IReleaseAggregate> LoadLatestReleaseAsync(
-        string projectId,
+        string productId,
         CancellationToken ct = default);
 }

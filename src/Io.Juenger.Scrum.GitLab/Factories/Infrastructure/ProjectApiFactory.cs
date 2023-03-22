@@ -1,6 +1,6 @@
 ﻿using Io.Juenger.GitLabClient.Api;
 using Io.Juenger.GitLabClient.Client;
-using Io.Juenger.Scrum.GitLab.Config;
+using Io.Juenger.Scrum.GitLab.Configs;
 using Microsoft.Extensions.Configuration;
 
 namespace Io.Juenger.Scrum.GitLab.Factories.Infrastructure

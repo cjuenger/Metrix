@@ -1,4 +1,4 @@
-﻿namespace Io.Juenger.Scrum.GitLab.Config
+﻿namespace Io.Juenger.Scrum.GitLab.Configs
 {
     internal interface ISprintRepositoryConfig
     {
