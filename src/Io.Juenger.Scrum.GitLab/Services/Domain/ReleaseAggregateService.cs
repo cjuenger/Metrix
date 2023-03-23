@@ -1,11 +1,7 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Io.Juenger.Scrum.GitLab.Contracts.Entities;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Entities;
+using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Contracts.Services;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
-using Io.Juenger.Scrum.GitLab.Repositories;
 using Io.Juenger.Scrum.GitLab.Services.Application;
 
 namespace Io.Juenger.Scrum.GitLab.Services.Domain;

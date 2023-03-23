@@ -1,11 +1,8 @@
-﻿using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Io.Juenger.Scrum.GitLab.Contracts.Entities;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 
-namespace Io.Juenger.Scrum.GitLab.Repositories
+namespace Io.Juenger.Scrum.GitLab.Contracts.Repositories
 {
-    internal interface IItemsRepository
+    public interface IItemsRepository
     {
         Task<IReadOnlyCollection<ItemEntity>> LoadProductItemsAsync(
             string projectId, 

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Io.Juenger.Scrum.GitLab.Contracts.Entities;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Entities;
+using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;
 using Io.Juenger.Scrum.GitLab.Services.Domain;
 using Io.Juenger.Scrum.GitLab.Services.Infrastructure;

@@ -1,19 +1,20 @@
 ﻿@using Radzen.Blazor
+@using Io.Juenger.Scrum.GitLab.Contracts.Aggregates
 
 @page "/SprintReport"
 <h3>Sprint Report</h3>
 
 <RadzenDropDown AllowClear="true"
                 Data="@_sprints"
-                TValue="SprintInfo"
+                TValue="ISprintAggregate"
                 TextProperty="Name"
                 Change="@OnChange" 
-                @bind-value="_selectedSprintInfo"
+                @bind-value="_selectedSprint"
                 Placeholder="Select..."
                 Style="width:500px;"/>
 
 <div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap">
-    <BurnDownChart Stories="@Stories" Title="Sprint" DueDate="@_endTime"/>
+    <BurnDownChart Stories="@Stories" Title="Sprint" DueDate="@_selectedSprint?.EndTime"/>
 </div>
 
 <div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
