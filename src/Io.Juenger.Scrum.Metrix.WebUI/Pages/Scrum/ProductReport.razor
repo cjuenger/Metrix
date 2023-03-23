@@ -1,24 +1,27 @@
 ﻿@using Radzen.Blazor
 @using Io.Juenger.Scrum.GitLab.Contracts.Aggregates
 
-@page "/SprintReport"
-<h3>Sprint Report</h3>
+@page "/ProductReport"
+<h3>Product Report</h3>
 
 <RadzenDropDown AllowClear="true"
-                Data="@_sprints"
-                TValue="ISprintAggregate"
+                Data="@_products"
+                TValue="IProductAggregate"
                 TextProperty="Name"
-                Change="@OnChange" 
-                @bind-value="_selectedSprint"
+                Change="@OnSelectedProductChanged" 
+                @bind-value="_selectedProduct"
                 Placeholder="Select..."
                 Style="width:500px;"/>
 
+<b class="mt-2">Product ID</b><br>
+<RadzenTextBox @bind-Value="@_productId" Placeholder="4" Change="@OnProductIdChanged"/>
+
 <div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap">
-    <BurnDownChart Stories="@Stories" Title="Sprint" DueDate="@_selectedSprint?.EndTime"/>
+    <BurnDownChart Stories="@Stories" Title="Product @_selectedProduct?.Id"/>
 </div>
 
 <div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
     <ItemsOverview Title="Completed" Items="@ClosedItems"/>
     <ItemsOverview Title="Open" Items="@OpenItems"/>
-    <ItemPieChart Items="@TotalItems" Title="Sprint Composition"/>
+    <ItemPieChart Items="@TotalItems" Title="Product Composition"/>
 </div>

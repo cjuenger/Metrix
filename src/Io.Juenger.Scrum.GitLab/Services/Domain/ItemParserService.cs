@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;

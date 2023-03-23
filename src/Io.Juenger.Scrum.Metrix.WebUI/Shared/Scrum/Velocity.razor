@@ -1,0 +1,37 @@
+﻿@using Radzen.Blazor
+
+<RadzenCard Style="width:1010px;">
+
+    <h3 class="card-title">Velocity</h3>
+
+    <RadzenChart>
+
+        <RadzenColumnSeries Data="@_completedStoriesSeries"
+                            CategoryProperty="X"
+                            Title="Sprints"
+                            LineType="LineType.Dashed"
+                            ValueProperty="Y" />
+
+        <RadzenColumnOptions Radius="5"/>
+
+        <RadzenLineSeries Data="@_smaVelocitySeries"
+                          CategoryProperty="X"
+                          Title="Velocity"
+                          ValueProperty="Y">
+            <RadzenMarkers MarkerType="MarkerType.None"/>
+        </RadzenLineSeries>
+
+        <RadzenCategoryAxis Padding="20" />
+
+        <RadzenValueAxis>
+            <RadzenGridLines Visible="true"/>
+            <RadzenAxisTitle Text="Story Points"/>
+        </RadzenValueAxis>
+    </RadzenChart>
+
+    <b>Velocity: @_velocity SP</b>
+    <b>Velocity of best 3 Sprints: @_bestVelocity SP</b>
+    <b>Velocity of worst 3 Sprints: @_worstVelocity SP</b>
+
+</RadzenCard>
+
