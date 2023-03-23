@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Io.Juenger.Autoconf;
+using Io.Juenger.Scrum.GitLab;
 using Io.Juenger.Scrum.Metrix.WebUI.Configs;
 
 namespace Io.Juenger.Scrum.Metrix.WebUI;
@@ -9,6 +10,7 @@ public class WebUiModule : Module
     protected override void Load(ContainerBuilder builder)
     {
         RegisterConfigurations(builder);
+        RegisterModules(builder);
     }
 
     private static void RegisterConfigurations(ContainerBuilder builder)
@@ -17,5 +19,10 @@ public class WebUiModule : Module
             .RegisterConfiguration<ProductConfig>()
             .AsSelf()
             .SingleInstance();
+    }
+
+    private static void RegisterModules(ContainerBuilder builder)
+    {
+        builder.RegisterModule<ScrumModule>();
     }
 }
