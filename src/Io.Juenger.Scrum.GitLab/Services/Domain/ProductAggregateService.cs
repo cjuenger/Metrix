@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
-using Io.Juenger.Scrum.GitLab.Contracts.Entities;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Contracts.Services;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
-using Io.Juenger.Scrum.GitLab.Repositories;
+using Io.Juenger.Scrum.GitLab.Factories.Application;
 using Io.Juenger.Scrum.GitLab.Services.Application;
 using Io.Juenger.Scrum.GitLab.Values;
 
@@ -18,15 +13,18 @@ internal class ProductAggregateService : IProductAggregateService, IProductVeloc
     private readonly IMetricsService _metricsService;
     private readonly ISprintRepository _sprintRepository;
     private readonly IItemsRepository _itemsRepository;
+    private readonly IWorkflowFactory _workflowFactory;
 
     public ProductAggregateService(
         IMetricsService metricsService,
         ISprintRepository sprintRepository,
-        IItemsRepository itemsRepository)
+        IItemsRepository itemsRepository,
+        IWorkflowFactory workflowFactory)
     {
         _metricsService = metricsService ?? throw new ArgumentNullException(nameof(metricsService));
         _sprintRepository = sprintRepository ?? throw new ArgumentNullException(nameof(sprintRepository));
         _itemsRepository = itemsRepository ?? throw new ArgumentNullException(nameof(itemsRepository));
+        _workflowFactory = workflowFactory ?? throw new ArgumentNullException(nameof(workflowFactory));
     }
     
     #region Metrics
@@ -165,7 +163,7 @@ internal class ProductAggregateService : IProductAggregateService, IProductVeloc
         return _metricsService.CalculateBurnUp(items);
     }
 
-    public async Task<CycleTimesValue> CalculateCycleTimeAsync(
+    public async Task<CycleTimesValue> CalculateCycleTimesAsync(
         string productId, 
         CancellationToken cancellationToken = default)
     {
@@ -179,17 +177,19 @@ internal class ProductAggregateService : IProductAggregateService, IProductVeloc
         string productId,
         CancellationToken cancellationToken = default)
     {
+        var workflow = _workflowFactory.Workflow;
+        
         var itemEntities = await _itemsRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
 
         var openStoryPoints = itemEntities
             .OfType<StoryEntity>()
-            .Where(s => s.State != WorkflowState.Closed)
+            .Where(s => s.WorkflowState.Name != workflow.WorkflowStates.Last().Name)
             .Sum(s => s.StoryPoints ?? 0);
 
         var completedStoryPoints = itemEntities
             .OfType<StoryEntity>()
-            .Where(s => s.State == WorkflowState.Closed)
+            .Where(s => s.WorkflowState.Name == workflow.WorkflowStates.Last().Name)
             .Sum(s => s.StoryPoints ?? 0);
 
         return new ProductStatusValue(completedStoryPoints, openStoryPoints);

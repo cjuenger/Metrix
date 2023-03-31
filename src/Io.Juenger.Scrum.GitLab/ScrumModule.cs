@@ -5,6 +5,7 @@ using Io.Juenger.Autoconf;
 using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Contracts.Services;
+using Io.Juenger.Scrum.GitLab.Factories.Application;
 using Io.Juenger.Scrum.GitLab.Factories.Domain;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;
 using Io.Juenger.Scrum.GitLab.Mappings;
@@ -43,6 +44,11 @@ namespace Io.Juenger.Scrum.GitLab
                 .RegisterType<ReleaseRepository>()
                 .As<IReleaseRepository>()
                 .SingleInstance();
+
+            builder
+                .RegisterType<ProductRepository>()
+                .As<IProductRepository>()
+                .SingleInstance();
         }
 
         private static void RegisterFactories(ContainerBuilder builder)
@@ -55,6 +61,11 @@ namespace Io.Juenger.Scrum.GitLab
             builder
                 .RegisterType<ProjectApiFactory>()
                 .As<IProjectApiFactory>()
+                .SingleInstance();
+
+            builder
+                .RegisterType<WorkflowFactory>()
+                .As<IWorkflowFactory>()
                 .SingleInstance();
         }
 
@@ -112,6 +123,11 @@ namespace Io.Juenger.Scrum.GitLab
             builder
                 .RegisterConfiguration<SprintRepositoryConfig>()
                 .As<ISprintRepositoryConfig>()
+                .SingleInstance();
+
+            builder
+                .RegisterConfiguration<WorkflowConfig>()
+                .As<IWorkflowConfig>()
                 .SingleInstance();
         }
         

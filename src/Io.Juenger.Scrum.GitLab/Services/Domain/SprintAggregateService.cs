@@ -2,7 +2,7 @@
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Contracts.Services;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
-using Io.Juenger.Scrum.GitLab.Repositories;
+using Io.Juenger.Scrum.GitLab.Factories.Application;
 using Io.Juenger.Scrum.GitLab.Services.Application;
 
 namespace Io.Juenger.Scrum.GitLab.Services.Domain;
@@ -13,17 +13,20 @@ internal class SprintAggregateService : ISprintAggregateService
     private readonly ISprintRepository _sprintRepository;
     private readonly IItemsRepository _itemsRepository;
     private readonly IProductVelocityService _productVelocityService;
+    private readonly IWorkflowFactory _workflowFactory;
 
     public SprintAggregateService(
         IMetricsService metricsService,
         ISprintRepository sprintRepository,
         IItemsRepository itemsRepository,
-        IProductVelocityService productVelocityService)
+        IProductVelocityService productVelocityService,
+        IWorkflowFactory workflowFactory)
     {
         _metricsService = metricsService ?? throw new ArgumentNullException(nameof(metricsService));
         _sprintRepository = sprintRepository ?? throw new ArgumentNullException(nameof(sprintRepository));
         _itemsRepository = itemsRepository ?? throw new ArgumentNullException(nameof(itemsRepository));
         _productVelocityService = productVelocityService ?? throw new ArgumentNullException(nameof(productVelocityService));
+        _workflowFactory = workflowFactory ?? throw new ArgumentNullException(nameof(workflowFactory));
     }
     
     public async Task<CompositionValue> CalculateCompositionAsync(
@@ -51,6 +54,10 @@ internal class SprintAggregateService : ISprintAggregateService
         var itemsOfSprint = await _itemsRepository
             .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
 
+        // NOTE, the burn down of a sprint is only relevant for the scope of the sprint.
+        // Thus for this metric the creation time of each item must be changed to the start date of the sprint!
+        foreach (var item in itemsOfSprint) item.CreatedAt = sprint.StartTime;
+
         var velocityValue = await _productVelocityService.CalculateVelocityAsync(productId, cancellationToken);
 
         return _metricsService.CalculateBurnDown(itemsOfSprint, velocityValue);
@@ -70,7 +77,7 @@ internal class SprintAggregateService : ISprintAggregateService
         return _metricsService.CalculateBurnUp(itemsOfSprint);
     }
 
-    public async Task<CycleTimesValue> CalculateCycleTimeAsync(
+    public async Task<CycleTimesValue> CalculateCycleTimesAsync(
         string productId, 
         int sprintId, 
         CancellationToken cancellationToken = default)
@@ -95,14 +102,15 @@ internal class SprintAggregateService : ISprintAggregateService
         var itemEntities = await _itemsRepository
             .LoadProductItemsAsync(productId, ofSprint: sprintAggregate.Name, ct: cancellationToken);
 
+        var workflow = _workflowFactory.Workflow;
         var openStoryPoints = itemEntities
             .OfType<StoryEntity>()
-            .Where(s => s.State != WorkflowState.Closed)
+            .Where(s => s.WorkflowState.Name != workflow.WorkflowStates.Last().Name)
             .Sum(s => s.StoryPoints ?? 0);
 
         var completedStoryPoints = itemEntities
             .OfType<StoryEntity>()
-            .Where(s => s.State == WorkflowState.Closed)
+            .Where(s => s.WorkflowState.Name == workflow.WorkflowStates.Last().Name)
             .Sum(s => s.StoryPoints ?? 0);
 
         return new SprintStatusValue(completedStoryPoints, openStoryPoints);

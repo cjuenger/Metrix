@@ -1,5 +1,7 @@
 ﻿@using Radzen.Blazor
 @using Io.Juenger.Scrum.GitLab.Contracts.Aggregates
+@using Io.Juenger.Scrum.Metrix.WebUI.Shared.Scrum
+@using Radzen
 
 @page "/SprintReport"
 <h3>Sprint Report</h3>
@@ -13,12 +15,28 @@
                 Placeholder="Select..."
                 Style="width:500px;"/>
 
-<div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap">
-    <BurnDownChart Stories="@Stories" Title="Sprint" DueDate="@_selectedSprint?.EndTime"/>
-</div>
+@if (ReportLoaded)
+{
+    <RadzenProgressBar 
+        ProgressBarStyle="ProgressBarStyle.Primary" 
+        Value="@Progress"
+        Style="margin-top: 5px; margin-bottom: 5px"/>
+    
+    <div style="display: flex; justify-content: flex-start; width: 80vw; flex-wrap: wrap">
+        <BurnDownChart BurnDown="@BurnDown" Title="Sprint" DueDate="@_selectedSprint?.EndTime" />
+    </div>
 
-<div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
-    <ItemsOverview Title="Completed" Items="@ClosedItems"/>
-    <ItemsOverview Title="Open" Items="@OpenItems"/>
-    <ItemPieChart Items="@TotalItems" Title="Sprint Composition"/>
-</div>
+    <div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 80vw; flex-wrap: wrap; gap: 10px">
+        <ItemPieChart Items="@TotalItems" Title="Sprint Composition"/>
+    </div>
+    
+    <div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 80vw; flex-wrap: wrap; gap: 10px">
+        <ItemsOverview Title="Open" Items="@OpenItems"/>
+        <ItemsOverview Title="In Progress" Items="@InProgressItems"/>
+        <ItemsOverview Title="Completed" Items="@ClosedItems"/>
+    </div>
+}
+else if (_selectedSprint != null)
+{
+    <div>Creating sprint report...</div>
+}

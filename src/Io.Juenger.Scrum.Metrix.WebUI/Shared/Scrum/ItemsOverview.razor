@@ -14,10 +14,17 @@
         <b class="col">Total: @(_totalCount)</b>
     </div>
     
-    <RadzenDataList class="overflow-auto" Style="padding-left: 10px; padding-right: 10px" WrapItems="true" Data="@Items" TItem="ItemEntity">
+    <RadzenDataList
+        class="overflow-auto"
+        Style="padding-left: 10px; padding-right: 10px; height: 450px"
+        WrapItems="true"
+        Data="@Items"
+        TItem="ItemEntity">
+        
         <Template Context="item">
             <BacklogItem Item="@item"/>
         </Template>
+        
     </RadzenDataList>
     
 </RadzenCard>

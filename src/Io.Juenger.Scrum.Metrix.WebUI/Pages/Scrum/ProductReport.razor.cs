@@ -2,7 +2,9 @@
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
+using Io.Juenger.Scrum.GitLab.Contracts.Services;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
+using Io.Juenger.Scrum.GitLab.Factories.Application;
 using Io.Juenger.Scrum.Metrix.WebUI.Configs;
 using Microsoft.AspNetCore.Components;
 
@@ -14,17 +16,22 @@ public partial class ProductReport
     private IProductAggregate? _selectedProduct;
     private IEnumerable<ItemEntity>? _backlogItems;
     private string _productId = "";
+    private WorkflowValue _workflow;
+    private bool _reportCreated;
+    private BurnDownValue _burnDown;
+    private VelocityValue _velocity;
+    private VelocityTrendValue _velocityTrend;
+    private CycleTimesValue _cycleTimes;
 
     private IEnumerable<ItemEntity> OpenItems => 
-        _backlogItems?.Where(i => i.State == WorkflowState.Opened) ?? Enumerable.Empty<ItemEntity>();
+        _backlogItems?.Where(i => !i.WorkflowState.Equals(_workflow.WorkflowStates.Last())) ?? Enumerable.Empty<ItemEntity>();
     
     private IEnumerable<ItemEntity> ClosedItems => 
-        _backlogItems?.Where(i => i.State == WorkflowState.Closed) ?? Enumerable.Empty<ItemEntity>();
+        _backlogItems?.Where(i => i.WorkflowState.Equals(_workflow.WorkflowStates.Last())) ?? Enumerable.Empty<ItemEntity>();
 
     private IEnumerable<ItemEntity>? TotalItems => _backlogItems;
     
-    private IEnumerable<StoryEntity> Stories => 
-        _backlogItems?.OfType<StoryEntity>() ?? Enumerable.Empty<StoryEntity>();
+    private int Progress => (int) ((float)ClosedItems.Count() / (TotalItems?.Count() ?? 0) * 100);
 
     [Inject] 
     private ILogger<SprintReport> Logger { get; set; } = default!;
@@ -37,19 +44,26 @@ public partial class ProductReport
     
     [Inject]
     private IItemsRepository ItemsRepository { get; set; } = default!;
+
+    [Inject] private IProductAggregateService ProductAggregateService { get; set; } = default!;
+
+    [Inject] private IWorkflowFactory WorkflowFactory { get; set; } = default!;
     
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync().ConfigureAwait(false);
-        _products = await LoadProductsAsync().ConfigureAwait(false);
+        // _products = await LoadProductsAsync().ConfigureAwait(false);
+        _workflow = WorkflowFactory.Workflow;
     }
     
     private async void OnSelectedProductChanged(object value)
     {
+        _reportCreated = false;
+        
         if (value is IProductAggregate product)
         {
             _selectedProduct = product;
-            _backlogItems = await LoadBacklogItemsAsync(_selectedProduct.Id).ConfigureAwait(false);
+            await CreateReportAsync().ConfigureAwait(false);
         }
 
         await InvokeAsync(StateHasChanged).ConfigureAwait(false);
@@ -59,11 +73,40 @@ public partial class ProductReport
 
     private async void OnProductIdChanged(object value)
     {
+        _reportCreated = false;
         if (value is not string productId) return;
         _selectedProduct = await LoadProductAsync(productId).ConfigureAwait(false);
-        _backlogItems = await LoadBacklogItemsAsync(productId).ConfigureAwait(false);
+        await CreateReportAsync().ConfigureAwait(false);
+        
+        await InvokeAsync(StateHasChanged).ConfigureAwait(false);
     }
 
+    private async Task CreateReportAsync()
+    {   
+        var productId = ProductConfig.ProductId;
+        _backlogItems = await ItemsRepository
+            .LoadProductItemsAsync(productId)
+            .ConfigureAwait(false);
+            
+        _burnDown = await ProductAggregateService
+            .CalculateBurnDownAsync(productId)
+            .ConfigureAwait(false);
+
+        _velocity = await ProductAggregateService
+            .CalculateVelocityAsync(productId)
+            .ConfigureAwait(false);
+
+        _velocityTrend = await ProductAggregateService
+            .CalculateVelocityTrendAsync(productId)
+            .ConfigureAwait(false);
+
+        _cycleTimes = await ProductAggregateService
+            .CalculateCycleTimesAsync(productId)
+            .ConfigureAwait(false);
+        
+        _reportCreated = true;
+    }
+    
     private async Task<IEnumerable<IProductAggregate>> LoadProductsAsync()
     {
         var unorderedProducts = await ProductRepository

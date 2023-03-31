@@ -165,7 +165,7 @@ internal class MetricsService : IMetricsService
             {
                 var averageXy = new XyValue<string, int>
                 {
-                    X = $"Sprint {aggregate.Count+1}",
+                    X = $"{aggregate.Count+1}",
                     Y = sprint.TotalStoryPoints
                 };
                 

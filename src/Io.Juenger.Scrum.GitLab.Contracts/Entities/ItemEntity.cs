@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Io.Juenger.Scrum.GitLab.Contracts.Values;
+﻿using Io.Juenger.Scrum.GitLab.Contracts.Values;
 
 namespace Io.Juenger.Scrum.GitLab.Contracts.Entities;
 
@@ -8,7 +6,7 @@ public class ItemEntity
 {
     public int Id { get; set; }
     public string Title { get; set; }
-    public WorkflowState State { get; set; }
+    public WorkflowStateValue WorkflowState { get; set; }
     public string Description { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime StartedAt { get; set; }

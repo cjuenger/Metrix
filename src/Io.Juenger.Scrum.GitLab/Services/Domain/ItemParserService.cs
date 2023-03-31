@@ -3,19 +3,17 @@ using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
+using Io.Juenger.Scrum.GitLab.Values;
 
 namespace Io.Juenger.Scrum.GitLab.Services.Domain
 {
     internal class ItemParserService : IItemParserService
     {
         private readonly IItemParserConfig _config;
-        private readonly IDictionary<string, WorkflowState> _stateMap;
 
         public ItemParserService(IItemParserConfig config)
         {
             _config = config ?? throw new ArgumentNullException(nameof(config));
-
-            _stateMap = _config.LabelToWorkflowMapping;
         }
         
         public ItemEntity Parse(Issue issue)
@@ -36,7 +34,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
                     CreatedAt = issue.CreatedAt,
                     ClosedAt = issue.ClosedAt,
                     UpdatedAt = issue.UpdatedAt,
-                    State = state
+                    WorkflowState = state
                 };
             }
             else if (IsBug(issue))
@@ -48,7 +46,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
                     CreatedAt = issue.CreatedAt,
                     ClosedAt = issue.ClosedAt,
                     UpdatedAt = issue.UpdatedAt,
-                    State = state
+                    WorkflowState = state
                 };
             } 
             else
@@ -60,7 +58,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
                     CreatedAt = issue.CreatedAt,
                     ClosedAt = issue.ClosedAt,
                     UpdatedAt = issue.UpdatedAt,
-                    State = state
+                    WorkflowState = state
                 };
             }
 
@@ -94,21 +92,21 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
             return Convert.ToInt32(split[0]);
         }
 
-        private WorkflowState GetItemState(Issue issue)
+        private WorkflowStateValue GetItemState(Issue issue)
         {
-            var state = WorkflowState.Opened;
+            var state =  _config.WorkflowMapping.Values.First();
 
             if (issue.ClosedAt != null)
             {
-                state = WorkflowState.Closed;
-                return state;
+                state = _config.WorkflowMapping.Values.Last();
+                return new WorkflowStateValue(state);
             } 
             
-            var label = issue.Labels
-                .Intersect(_stateMap.Keys)
+            var workflowState = issue.Labels
+                .Intersect(_config.WorkflowMapping.Keys)
                 .FirstOrDefault();
 
-            return label == null ? state : _stateMap[label];
+            return workflowState != null ? new WorkflowStateValue(workflowState) : new WorkflowStateValue(state);
         }
     }
 }

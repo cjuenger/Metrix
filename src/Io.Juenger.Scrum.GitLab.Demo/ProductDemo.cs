@@ -65,7 +65,7 @@ public class ProductDemo
         WriteSeries(burnUp.TotalSeries);
         Console.WriteLine();
             
-        var cycleTimeValue = await _productAggregateService.CalculateCycleTimeAsync(_demoConfig.ProductId);
+        var cycleTimeValue = await _productAggregateService.CalculateCycleTimesAsync(_demoConfig.ProductId);
         Console.WriteLine("Cycle Time:");
         foreach (var cycleTime in cycleTimeValue.CycleTimes)
         {

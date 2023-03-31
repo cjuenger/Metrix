@@ -10,7 +10,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Dem
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Tests", "Io.Juenger.Scrum.GitLab.Tests\Io.Juenger.Scrum.GitLab.Tests.csproj", "{3D6FCF72-5D60-47ED-8929-844B60348B90}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.Metrix.WebUI", "Io.Juenger.Scrum.Metrix.WebUI\Io.Juenger.Scrum.Metrix.WebUI.csproj", "{C9EB869E-9E0B-4A7C-B82F-2EACFBE8C01D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.Metrix.WebUI", "Io.Juenger.Scrum.Metrix.WebUI\Io.Juenger.Scrum.Metrix.WebUI.csproj", "{C01316B5-9DC6-4CFC-BC19-76F284641D6A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{9762A81A-D8B3-4595-8F50-450DB7A7A1DD}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,9 +43,9 @@ Global
 		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3D6FCF72-5D60-47ED-8929-844B60348B90}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C9EB869E-9E0B-4A7C-B82F-2EACFBE8C01D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C9EB869E-9E0B-4A7C-B82F-2EACFBE8C01D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C9EB869E-9E0B-4A7C-B82F-2EACFBE8C01D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C9EB869E-9E0B-4A7C-B82F-2EACFBE8C01D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -1,20 +1,12 @@
 ﻿@using Radzen.Blazor
 
-<RadzenCard Style="width:1010px;">
+<RadzenCard Style="width:1520px;">
 
     <h3 class="card-title">Velocity</h3>
 
     <RadzenChart>
 
-        <RadzenColumnSeries Data="@_completedStoriesSeries"
-                            CategoryProperty="X"
-                            Title="Sprints"
-                            LineType="LineType.Dashed"
-                            ValueProperty="Y" />
-
-        <RadzenColumnOptions Radius="5"/>
-
-        <RadzenLineSeries Data="@_smaVelocitySeries"
+        <RadzenLineSeries Data="@VelocityTrend.VelocitySeries"
                           CategoryProperty="X"
                           Title="Velocity"
                           ValueProperty="Y">
@@ -22,6 +14,7 @@
         </RadzenLineSeries>
 
         <RadzenCategoryAxis Padding="20" />
+        <RadzenColumnOptions Radius="5"/>
 
         <RadzenValueAxis>
             <RadzenGridLines Visible="true"/>
@@ -29,9 +22,10 @@
         </RadzenValueAxis>
     </RadzenChart>
 
-    <b>Velocity: @_velocity SP</b>
-    <b>Velocity of best 3 Sprints: @_bestVelocity SP</b>
-    <b>Velocity of worst 3 Sprints: @_worstVelocity SP</b>
+    <b>Sprint Length: @ProductConfig.SprintLength</b>
+    <b>Velocity: @Velocity.AverageVelocity SP</b>
+    <b>Velocity of best 3 Sprints: @Velocity.Best3SprintsAverageVelocity SP</b>
+    <b>Velocity of worst 3 Sprints: @Velocity.Worst3SprintsAverageVelocity SP</b>
 
 </RadzenCard>
 

@@ -7,8 +7,19 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <AdditionalFiles Include="Pages\Scrum\ProductReport.razor" />
+      <AdditionalFiles Include="Pages\Scrum\SprintReport.razor" />
+      <AdditionalFiles Include="Shared\Scrum\BacklogItem.razor" />
+      <AdditionalFiles Include="Shared\Scrum\BurnDownChart.razor" />
+      <AdditionalFiles Include="Shared\Scrum\CycleTime.razor" />
+      <AdditionalFiles Include="Shared\Scrum\ItemPieChart.razor" />
+      <AdditionalFiles Include="Shared\Scrum\ItemsOverview.razor" />
+      <AdditionalFiles Include="Shared\Scrum\VelocityView.razor" />
+    </ItemGroup>
+
+    <ItemGroup>
       <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="8.0.0" />
-      <PackageReference Include="Radzen.Blazor" Version="4.7.12" />
+      <PackageReference Include="Radzen.Blazor" Version="4.8.3" />
     </ItemGroup>
 
     <ItemGroup>

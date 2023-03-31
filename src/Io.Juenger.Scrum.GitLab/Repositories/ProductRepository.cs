@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Io.Juenger.Scrum.GitLab.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;
@@ -11,18 +12,15 @@ internal class ProductRepository : IProductRepository
 {
     private readonly IProjectApiFactory _projectApiFactory;
     private readonly IPaginationService _paginationService;
-    private readonly IMapper _mapper;
     private readonly ILogger<ProductRepository> _logger;
 
     public ProductRepository(
         IProjectApiFactory projectApiFactory, 
         IPaginationService paginationService,
-        IMapper mapper,
         ILogger<ProductRepository> logger)
     {
         _projectApiFactory = projectApiFactory ?? throw new ArgumentNullException(nameof(projectApiFactory));
         _paginationService = paginationService ?? throw new ArgumentNullException(nameof(paginationService));
-        _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
@@ -37,7 +35,7 @@ internal class ProductRepository : IProductRepository
             .GetProjectAsync(productId, cancellationToken: cancellationToken)
             .ConfigureAwait(false);
 
-        var product = _mapper.Map<IProductAggregate>(project);
+        var product = new ProductAggregate(project.Id, project.Name);
         return product;
     }
     
@@ -51,7 +49,9 @@ internal class ProductRepository : IProductRepository
             .BrowseAllAsync(page => projectApi.GetProjectsAsync(page:page, cancellationToken: cancellationToken))
             .ConfigureAwait(false);
 
-        var products = _mapper.Map<IEnumerable<IProductAggregate>>(projects);
+        var products = projects
+            .Select(project => new ProductAggregate(project.Id, project.Name))
+            .ToList();
 
         return products;
     }

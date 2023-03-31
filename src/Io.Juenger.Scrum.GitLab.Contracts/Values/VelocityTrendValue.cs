@@ -1,7 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-
-namespace Io.Juenger.Scrum.GitLab.Contracts.Values
+﻿namespace Io.Juenger.Scrum.GitLab.Contracts.Values
 {
     public class VelocityTrendValue
     {

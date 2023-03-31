@@ -9,7 +9,7 @@ public interface IProductAggregateService
     Task<CompositionValue> CalculateCompositionAsync(string productId, CancellationToken cancellationToken = default);
     Task<BurnDownValue> CalculateBurnDownAsync(string productId, CancellationToken cancellationToken = default);
     Task<BurnUpValue> CalculateBurnUpAsync(string productId, CancellationToken cancellationToken = default);
-    Task<CycleTimesValue> CalculateCycleTimeAsync(string productId, CancellationToken cancellationToken = default);
+    Task<CycleTimesValue> CalculateCycleTimesAsync(string productId, CancellationToken cancellationToken = default);
 
     Task<ProductStatusValue> CalculateProductStatusAsync(
         string productId,

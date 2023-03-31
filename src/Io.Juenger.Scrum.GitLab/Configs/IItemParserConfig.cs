@@ -1,6 +1,4 @@
-﻿using Io.Juenger.Scrum.GitLab.Contracts.Values;
-
-namespace Io.Juenger.Scrum.GitLab.Configs
+﻿namespace Io.Juenger.Scrum.GitLab.Configs
 {
     internal interface IItemParserConfig
     {
@@ -12,6 +10,6 @@ namespace Io.Juenger.Scrum.GitLab.Configs
         
         string StoryPointSplitter { get; }
         
-        Dictionary<string, WorkflowState> LabelToWorkflowMapping { get; }
+        Dictionary<string, string> WorkflowMapping { get; }
     }
 }

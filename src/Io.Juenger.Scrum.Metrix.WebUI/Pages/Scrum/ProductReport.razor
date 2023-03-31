@@ -1,14 +1,17 @@
 ﻿@using Radzen.Blazor
 @using Io.Juenger.Scrum.GitLab.Contracts.Aggregates
+@using Io.Juenger.Scrum.Metrix.WebUI.Shared.Scrum
 
 @page "/ProductReport"
 <h3>Product Report</h3>
+
+<RadzenProgressBar Value="@Progress"/>
 
 <RadzenDropDown AllowClear="true"
                 Data="@_products"
                 TValue="IProductAggregate"
                 TextProperty="Name"
-                Change="@OnSelectedProductChanged" 
+                Change="@OnSelectedProductChanged"
                 @bind-value="_selectedProduct"
                 Placeholder="Select..."
                 Style="width:500px;"/>
@@ -16,12 +19,27 @@
 <b class="mt-2">Product ID</b><br>
 <RadzenTextBox @bind-Value="@_productId" Placeholder="4" Change="@OnProductIdChanged"/>
 
-<div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap">
-    <BurnDownChart Stories="@Stories" Title="Product @_selectedProduct?.Id"/>
-</div>
+@if (_reportCreated)
+{
+    <div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; margin-top: 10px">
+        <BurnDownChart BurnDown="@_burnDown" Title=@($"Product {_selectedProduct?.Id}")></BurnDownChart>
+    </div>
+    
+    <div style="display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; margin-top: 10px">
+        <VelocityView Velocity="@_velocity" VelocityTrend="@_velocityTrend"/>
+    </div>
 
-<div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
-    <ItemsOverview Title="Completed" Items="@ClosedItems"/>
-    <ItemsOverview Title="Open" Items="@OpenItems"/>
-    <ItemPieChart Items="@TotalItems" Title="Product Composition"/>
-</div>
+    <div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
+        <ItemPieChart Items="@TotalItems" Title="Product Composition"/>
+        <CycleTime CycleTimes="@_cycleTimes"/>
+    </div>
+    
+    <div style="margin-top: 10px; display: flex; justify-content: flex-start; width: 90vw; flex-wrap: wrap; gap: 10px">
+        <ItemsOverview Title="Open" Items="@OpenItems"/>
+        <ItemsOverview Title="Completed" Items="@ClosedItems"/>
+    </div>
+}
+else if (_selectedProduct != null)
+{
+    <div>Creating product report...</div>
+}

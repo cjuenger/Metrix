@@ -2,6 +2,7 @@
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Contracts.Services;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
+using Io.Juenger.Scrum.GitLab.Factories.Application;
 using Io.Juenger.Scrum.GitLab.Services.Application;
 
 namespace Io.Juenger.Scrum.GitLab.Services.Domain;
@@ -11,15 +12,18 @@ internal class ReleaseAggregateService : IReleaseAggregateService
     private readonly IMetricsService _metricsService;
     private readonly IItemsRepository _itemsRepository;
     private readonly IProductVelocityService _productVelocityService;
+    private readonly IWorkflowFactory _workflowFactory;
 
     public ReleaseAggregateService(
         IMetricsService metricsService,
         IItemsRepository itemsRepository,
-        IProductVelocityService productVelocityService)
+        IProductVelocityService productVelocityService,
+        IWorkflowFactory workflowFactory)
     {
         _metricsService = metricsService ?? throw new ArgumentNullException(nameof(metricsService));
         _itemsRepository = itemsRepository ?? throw new ArgumentNullException(nameof(itemsRepository));
         _productVelocityService = productVelocityService ?? throw new ArgumentNullException(nameof(productVelocityService));
+        _workflowFactory = workflowFactory ?? throw new ArgumentNullException(nameof(workflowFactory));
     }
     
     public async Task<CompositionValue> CalculateCompositionAsync(
@@ -76,15 +80,16 @@ internal class ReleaseAggregateService : IReleaseAggregateService
     {
         var itemEntities = await _itemsRepository
             .LoadProductItemsAsync(productId, ofReleaseId: releaseId, ct: cancellationToken);
-
+        
+        var workflow = _workflowFactory.Workflow;
         var openStoryPoints = itemEntities
             .OfType<StoryEntity>()
-            .Where(s => s.State != WorkflowState.Closed)
+            .Where(s => s.WorkflowState.Name != workflow.WorkflowStates.Last().Name)
             .Sum(s => s.StoryPoints ?? 0);
 
         var completedStoryPoints = itemEntities
             .OfType<StoryEntity>()
-            .Where(s => s.State == WorkflowState.Closed)
+            .Where(s => s.WorkflowState.Name == workflow.WorkflowStates.Last().Name)
             .Sum(s => s.StoryPoints ?? 0);
 
         return new ReleaseStatusValue(completedStoryPoints, openStoryPoints);
