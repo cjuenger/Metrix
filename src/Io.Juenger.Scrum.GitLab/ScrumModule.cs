@@ -126,6 +126,11 @@ namespace Io.Juenger.Scrum.GitLab
                 .SingleInstance();
 
             builder
+                .RegisterConfiguration<ProductRepositoryConfig>()
+                .As<IProductRepositoryConfig>()
+                .SingleInstance();
+
+            builder
                 .RegisterConfiguration<WorkflowConfig>()
                 .As<IWorkflowConfig>()
                 .SingleInstance();

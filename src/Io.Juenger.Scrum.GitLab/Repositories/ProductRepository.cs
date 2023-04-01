@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using Io.Juenger.Scrum.GitLab.Aggregates;
+﻿using Io.Juenger.Scrum.GitLab.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
 using Io.Juenger.Scrum.GitLab.Factories.Infrastructure;
