@@ -3,8 +3,8 @@
 internal interface IProductRepositoryConfig
 {
     string ProductVisionPattern { get; set; }
-    string RepositoryTypePattern { get; set; }
-    string ProductPattern { get; set; }
+    string ProductTypePattern { get; set; }
+    string ProductNamePattern { get; set; }
     string ProductKickoffPattern { get; set; }
-    string ProductEndPattern { get; set; }
+    string ProductDueDatePattern { get; set; }
 }

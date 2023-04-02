@@ -3,7 +3,6 @@ using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
-using Io.Juenger.Scrum.GitLab.Values;
 
 namespace Io.Juenger.Scrum.GitLab.Services.Domain
 {

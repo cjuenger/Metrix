@@ -3,5 +3,8 @@
 public interface IProductAggregate
 {
     public string Id { get; }
-    public string Name { get; set; }
+    public string Name { get; }
+    public string Vision { get; }
+    public DateTime Kickoff { get; }
+    public DateTime DueDate { get; }
 }
