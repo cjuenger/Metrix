@@ -71,9 +71,17 @@ internal class ProductRepository : IProductRepository
 
     private bool IsScrumProduct(Project project)
     {
+        if (string.IsNullOrWhiteSpace(project.Description)) return false;
+        
         var rgx = new Regex(_config.ProductTypePattern);
         var match = rgx.Match(project.Description);
-        return match.Success;
+
+        if (TryGetValueFromMatch(match, out var value))
+        {
+            return value == "ScrumBoard";
+        }
+        
+        return false;
     }
 
     private ProductAggregate CreateProductAggregate(Project project)
@@ -148,8 +156,9 @@ internal class ProductRepository : IProductRepository
     {
         if (match.Success)
         {
-            var split = match.Value.Split(":");
+            var split = match.Value.Split(":", 2);
             value = split[^1].Trim();
+            value = value.Replace(";", string.Empty);
             return true;
         }
 

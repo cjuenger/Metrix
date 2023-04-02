@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Io.Juenger.Scrum.GitLab.Services.Infrastructure
+﻿namespace Io.Juenger.Scrum.GitLab.Services.Infrastructure
 {
     internal class PaginationService : IPaginationService
     {
@@ -14,12 +9,14 @@ namespace Io.Juenger.Scrum.GitLab.Services.Infrastructure
             if (firstPage < 1) firstPage = 1;
             
             var page = firstPage;
-            IEnumerable<T> pageResult;
+            IList<T>? pageResult;
             var totalResult = new List<T>();
 
             do
             {
                 pageResult = await func.Invoke(page).ConfigureAwait(false);
+                // ReSharper disable once NullCoalescingConditionIsAlwaysNotNullAccordingToAPIContract
+                pageResult ??= new List<T>();
                 totalResult.AddRange(pageResult);
                 page++;
             } 

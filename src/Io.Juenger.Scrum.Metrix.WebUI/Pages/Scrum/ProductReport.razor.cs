@@ -52,7 +52,7 @@ public partial class ProductReport
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync().ConfigureAwait(false);
-        // _products = await LoadProductsAsync().ConfigureAwait(false);
+        _products = await LoadProductsAsync().ConfigureAwait(false);
         _workflow = WorkflowFactory.Workflow;
     }
     
@@ -71,15 +71,15 @@ public partial class ProductReport
         Debug.WriteLine($"Value of {value} changed");
     }
 
-    private async void OnProductIdChanged(object value)
-    {
-        _reportCreated = false;
-        if (value is not string productId) return;
-        _selectedProduct = await LoadProductAsync(productId).ConfigureAwait(false);
-        await CreateReportAsync().ConfigureAwait(false);
-        
-        await InvokeAsync(StateHasChanged).ConfigureAwait(false);
-    }
+    // private async void OnProductIdChanged(object value)
+    // {
+    //     _reportCreated = false;
+    //     if (value is not string productId) return;
+    //     _selectedProduct = await LoadProductAsync(productId).ConfigureAwait(false);
+    //     await CreateReportAsync().ConfigureAwait(false);
+    //     
+    //     await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+    // }
 
     private async Task CreateReportAsync()
     {   
@@ -113,7 +113,7 @@ public partial class ProductReport
             .LoadProductsAsync()
             .ConfigureAwait(false);
         
-        var orderedProducts = unorderedProducts.OrderBy(p => p.Id);
+        var orderedProducts = unorderedProducts.OrderBy(p => p.Name);
         return orderedProducts;
     }
 
