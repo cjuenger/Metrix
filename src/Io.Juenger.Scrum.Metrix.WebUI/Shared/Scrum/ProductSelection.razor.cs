@@ -9,6 +9,9 @@ public partial class ProductSelection
 {
     private IEnumerable<IProductAggregate>? _products;
     private IProductAggregate? _selectedProduct;
+
+    private string Kickoff => _selectedProduct?.Kickoff.ToString("yyyy-MM-dd") ?? string.Empty;
+    private string DueDate => _selectedProduct?.DueDate.ToString("yyyy-MM-dd") ?? string.Empty;
     
     [Inject] 
     private IProductRepository ProductRepository { get; set; } = default!;

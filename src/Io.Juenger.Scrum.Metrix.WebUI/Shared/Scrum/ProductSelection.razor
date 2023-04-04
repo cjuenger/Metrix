@@ -1,18 +1,34 @@
 ﻿@using Radzen.Blazor
 @using Io.Juenger.Scrum.GitLab.Contracts.Aggregates
 
-<RadzenDropDown AllowClear="true"
-                Data="@_products"
-                TValue="IProductAggregate"
-                TextProperty="Name"
-                Change="@OnSelectedProductChanged"
-                @bind-value="_selectedProduct"
-                Placeholder="Select Product..."
-                Style="width:500px;"/>
-                
-@if (_selectedProduct != null)
-{
-    <span>Product Vision: @_selectedProduct.Vision</span>
-    <span>Kickoff: @_selectedProduct.Kickoff</span>
-    <span>Due Date: @_selectedProduct.DueDate</span>
-}                
+<div class="container-fluid">
+
+    <div class="row row-cols-3 align-items-center">
+        @* justify-content-start *@
+        <div class="col col-auto">
+            <RadzenDropDown AllowClear="true"
+                            Data="@_products"
+                            TValue="IProductAggregate"
+                            TextProperty="Name"
+                            Change="@OnSelectedProductChanged"
+                            @bind-value="_selectedProduct"
+                            Placeholder="Select Product..."
+                            Style="width:250px;"/>
+        </div>
+        
+        @if (_selectedProduct != null)
+        {
+            <div class="col col-auto">
+                <div>Kickoff: @Kickoff</div>
+                <div>Due Date: @DueDate</div>
+            </div>
+
+            <div class="col col-fill-remaining-width">
+                <div>Product Vision: @_selectedProduct?.Vision</div>
+            </div>
+        }
+        
+    </div>
+
+</div>
+             
