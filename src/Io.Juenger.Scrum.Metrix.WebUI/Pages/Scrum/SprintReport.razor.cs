@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
+using System.Diagnostics;
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
@@ -36,6 +37,9 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Pages.Scrum
         
         private int Progress => (int)((float)ClosedItems.Count() / (_sprintBacklogItems?.Count() ?? 0) * 100);
 
+        [Inject]
+        private IContext Context { get; set; }
+        
         [Inject] 
         private ILogger<SprintReport> Logger { get; set; } = default!;
 
@@ -56,10 +60,11 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Pages.Scrum
         protected override async Task OnInitializedAsync()
         {
             await base.OnInitializedAsync().ConfigureAwait(false);
-
-            var productId = ProductConfig.ProductId;
-            _sprints = await LoadSprintsAsync(productId).ConfigureAwait(false);
+            
             _workflow = WorkflowFactory.Workflow;
+            Context.PropertyChanged += OnPropertyChanged;
+
+            await LoadSprintsAsync().ConfigureAwait(false);
         }
         
         private async void OnChange(object value)
@@ -76,9 +81,18 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Pages.Scrum
             Debug.WriteLine($"Value of {value} changed");
         }
 
+        private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
+        {
+            if (sender is not IContext) return;
+            await LoadSprintsAsync().ConfigureAwait(false);
+        }
+        
         private async Task LoadSprintReportAsync(ISprintAggregate sprintAggregate)
-        {   
-            var productId = ProductConfig.ProductId;
+        {
+            if (Context.SelectedProduct == null) return;
+
+            var productId = Context.SelectedProduct.Id;
+            
             _sprintBacklogItems = await ItemsRepository
                 .LoadProductItemsAsync(productId, ofSprint: sprintAggregate.Name)
                 .ConfigureAwait(false);
@@ -88,6 +102,17 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Pages.Scrum
                 .ConfigureAwait(false);
             
             ReportLoaded = true;
+        }
+
+        private async Task LoadSprintsAsync()
+        {
+            if (Context.SelectedProduct != null)
+            {
+                _sprints = null;
+                _selectedSprint = null;
+                _sprints = await LoadSprintsAsync(Context.SelectedProduct.Id).ConfigureAwait(false);
+                await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+            }
         }
         
         private async Task<IEnumerable<ISprintAggregate>> LoadSprintsAsync(string productId)

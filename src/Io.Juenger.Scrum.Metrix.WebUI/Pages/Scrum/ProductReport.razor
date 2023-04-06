@@ -1,23 +1,9 @@
 ﻿@using Radzen.Blazor
-@using Io.Juenger.Scrum.GitLab.Contracts.Aggregates
 @using Io.Juenger.Scrum.Metrix.WebUI.Shared.Scrum
 
 @page "/ProductReport"
-<h3>Product Report</h3>
-
 <RadzenProgressBar Value="@Progress"/>
-
-<RadzenDropDown AllowClear="true"
-                Data="@_products"
-                TValue="IProductAggregate"
-                TextProperty="Name"
-                Change="@OnSelectedProductChanged"
-                @bind-value="_selectedProduct"
-                Placeholder="Select..."
-                Style="width:500px;"/>
-
-@* <b class="mt-2">Product ID</b><br> *@
-@* <RadzenTextBox @bind-Value="@_productId" Placeholder="4" Change="@OnProductIdChanged"/> *@
+<h3>Product Report</h3>
 
 @if (_reportCreated)
 {
@@ -42,4 +28,8 @@
 else if (_selectedProduct != null)
 {
     <div>Creating product report...</div>
+}
+else if (_selectedProduct == null)
+{
+    <div class="information">No Product selected! Please select a Product!</div>
 }

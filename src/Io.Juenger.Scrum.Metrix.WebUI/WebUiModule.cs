@@ -11,6 +11,11 @@ public class WebUiModule : Module
     {
         RegisterConfigurations(builder);
         RegisterModules(builder);
+
+        builder
+            .RegisterType<Context>()
+            .As<IContext>()
+            .SingleInstance();
     }
 
     private static void RegisterConfigurations(ContainerBuilder builder)

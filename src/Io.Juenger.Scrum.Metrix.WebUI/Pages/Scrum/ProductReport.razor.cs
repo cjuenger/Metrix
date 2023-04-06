@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+﻿using System.ComponentModel;
 using Io.Juenger.Scrum.GitLab.Contracts.Aggregates;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Repositories;
@@ -12,10 +12,8 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Pages.Scrum;
 
 public partial class ProductReport
 {
-    private IEnumerable<IProductAggregate>? _products;
     private IProductAggregate? _selectedProduct;
     private IEnumerable<ItemEntity>? _backlogItems;
-    private string _productId = "";
     private WorkflowValue _workflow;
     private bool _reportCreated;
     private BurnDownValue _burnDown;
@@ -34,6 +32,9 @@ public partial class ProductReport
     private int Progress => (int) ((float)ClosedItems.Count() / (TotalItems?.Count() ?? 0) * 100);
 
     [Inject] 
+    private IContext Context { get; set; } = default!;
+    
+    [Inject] 
     private ILogger<SprintReport> Logger { get; set; } = default!;
 
     [Inject]
@@ -51,39 +52,30 @@ public partial class ProductReport
     
     protected override async Task OnInitializedAsync()
     {
+        Context.PropertyChanged += OnPropertyChanged;
+        
         await base.OnInitializedAsync().ConfigureAwait(false);
-        _products = await LoadProductsAsync().ConfigureAwait(false);
         _workflow = WorkflowFactory.Workflow;
     }
-    
-    private async void OnSelectedProductChanged(object value)
+
+    private async void OnPropertyChanged(object? sender, PropertyChangedEventArgs e)
     {
+        if (sender is not IContext context) return;
+        
         _reportCreated = false;
         
-        if (value is IProductAggregate product)
-        {
-            _selectedProduct = product;
-            await CreateReportAsync().ConfigureAwait(false);
-        }
-
+        _selectedProduct = context.SelectedProduct;
+        
+        if(_selectedProduct == null) return;
+        await CreateReportAsync().ConfigureAwait(false);
         await InvokeAsync(StateHasChanged).ConfigureAwait(false);
-
-        Debug.WriteLine($"Value of {value} changed");
     }
-
-    // private async void OnProductIdChanged(object value)
-    // {
-    //     _reportCreated = false;
-    //     if (value is not string productId) return;
-    //     _selectedProduct = await LoadProductAsync(productId).ConfigureAwait(false);
-    //     await CreateReportAsync().ConfigureAwait(false);
-    //     
-    //     await InvokeAsync(StateHasChanged).ConfigureAwait(false);
-    // }
 
     private async Task CreateReportAsync()
     {   
-        var productId = ProductConfig.ProductId;
+        // var productId = ProductConfig.ProductId;
+
+        var productId = _selectedProduct!.Id;
         _backlogItems = await ItemsRepository
             .LoadProductItemsAsync(productId)
             .ConfigureAwait(false);
@@ -105,22 +97,5 @@ public partial class ProductReport
             .ConfigureAwait(false);
         
         _reportCreated = true;
-    }
-    
-    private async Task<IEnumerable<IProductAggregate>> LoadProductsAsync()
-    {
-        var unorderedProducts = await ProductRepository
-            .LoadProductsAsync()
-            .ConfigureAwait(false);
-        
-        var orderedProducts = unorderedProducts.OrderBy(p => p.Name);
-        return orderedProducts;
-    }
-
-    private Task<IProductAggregate> LoadProductAsync(string productId) => ProductRepository.LoadProductAsync(productId);
-
-    private Task<IReadOnlyCollection<ItemEntity>> LoadBacklogItemsAsync(string productId)
-    {
-        return ItemsRepository.LoadProductItemsAsync(productId);
     }
 }

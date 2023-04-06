@@ -12,6 +12,9 @@ public partial class ProductSelection
 
     private string Kickoff => _selectedProduct?.Kickoff.ToString("yyyy-MM-dd") ?? string.Empty;
     private string DueDate => _selectedProduct?.DueDate.ToString("yyyy-MM-dd") ?? string.Empty;
+
+    [Inject] 
+    private IContext Context { get; set; } = default!;
     
     [Inject] 
     private IProductRepository ProductRepository { get; set; } = default!;
@@ -23,6 +26,8 @@ public partial class ProductSelection
     {
         await base.OnInitializedAsync().ConfigureAwait(false);
         _products = await LoadProductsAsync().ConfigureAwait(false);
+        
+        Context.Products = _products.ToList();
     }
     
     private async Task<IEnumerable<IProductAggregate>> LoadProductsAsync()
@@ -38,5 +43,7 @@ public partial class ProductSelection
     private async void OnSelectedProductChanged(object value)
     {
         await InvokeAsync(StateHasChanged).ConfigureAwait(false);
+
+        Context.SelectedProduct = _selectedProduct;
     }
 }
