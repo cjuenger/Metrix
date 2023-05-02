@@ -31,6 +31,10 @@ internal class MetricsService : IMetricsService
         var averageSprintLength = CalculateAverageSprintLength(sprintVelocityValues);
         var averageVelocity = CalculateAverageVelocity(allSprints);
 
+        var last5Sprints = sprintVelocityValues.TakeLast(5).ToList();
+        var last5SprintsAverageVelocity = CalculateAverageVelocity(last5Sprints);
+        var last5SprintsDayAverageVelocity = CalculateDayAverageVelocity(last5Sprints);
+
         var best3Sprints = allSprints.TakeLast(3).ToList();
         var best3SprintsAverageVelocity = CalculateAverageVelocity(best3Sprints);
         var best3SprintsDayAverageVelocity = CalculateDayAverageVelocity(best3Sprints);
@@ -38,9 +42,11 @@ internal class MetricsService : IMetricsService
         var worst3Sprints = allSprints.Take(3).ToList();
         var worst3SprintsAverageVelocity = CalculateAverageVelocity(worst3Sprints);
         var worst3SprintsDayAverageVelocity = CalculateDayAverageVelocity(worst3Sprints);
-
+        
         return new VelocityValue(
             averageVelocity,
+            last5SprintsAverageVelocity,
+            last5SprintsDayAverageVelocity,
             best3SprintsAverageVelocity,
             best3SprintsDayAverageVelocity,
             worst3SprintsAverageVelocity,
@@ -89,7 +95,7 @@ internal class MetricsService : IMetricsService
             
         var estimateSeries = CalculateBurnDownEstimationChartSeries(
             burnDownSeries, 
-            velocityValue.DayAverageVelocity);
+            velocityValue.Last5SprintsDayAverageVelocity);
             
         var bestEstimateSeries = CalculateBurnDownEstimationChartSeries(
             burnDownSeries, 

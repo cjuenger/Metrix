@@ -80,12 +80,12 @@ public class MetricServiceTests
 
         var velocityTrendSeries = new[]
         {
-            new XyValue<string, int> { X="Sprint 1", Y=20 },
-            new XyValue<string, int> { X="Sprint 2", Y=15 },
-            new XyValue<string, int> { X="Sprint 3", Y=5 },
-            new XyValue<string, int> { X="Sprint 4", Y=30 },
-            new XyValue<string, int> { X="Sprint 5", Y=40 },
-            new XyValue<string, int> { X="Sprint 6", Y=25 }
+            new XyValue<string, int> { X="1", Y=20 },
+            new XyValue<string, int> { X="2", Y=15 },
+            new XyValue<string, int> { X="3", Y=5 },
+            new XyValue<string, int> { X="4", Y=30 },
+            new XyValue<string, int> { X="5", Y=40 },
+            new XyValue<string, int> { X="6", Y=25 }
         };
 
         velocityTrendValue.VelocitySeries.Should().BeEquivalentTo(velocityTrendSeries);
@@ -175,6 +175,8 @@ public class MetricServiceTests
         
         var velocity = new VelocityValue(
             15f,
+            1f,
+            1f,
             15f,
             1.5f,
             5f,
@@ -229,7 +231,7 @@ public class MetricServiceTests
         burnDownValue.EstimateSeries.First().Y.Should().Be(last.Y);
         burnDownValue.EstimateSeries.First().X.Should().Be(last.X);
         burnDownValue.EstimateSeries.Last().Y.Should().Be(0);
-        var daysRemaining = burnDownValue.EstimateSeries.First().Y / velocity.DayAverageVelocity;
+        var daysRemaining = burnDownValue.EstimateSeries.First().Y / velocity.Last5SprintsAverageVelocity;
         var estimatedDay = burnDownValue.EstimateSeries.First().X.GetBusinessDueDate(daysRemaining);
         burnDownValue.EstimateSeries.Last().X.Should().Be(estimatedDay);
         
