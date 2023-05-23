@@ -2,7 +2,12 @@
 @using Io.Juenger.Scrum.Metrix.WebUI.Shared.Scrum
 
 @page "/ProductReport"
-<RadzenProgressBar Value="@Progress"/>
+
+@if (_reportCreated)
+{
+    <RadzenProgressBar Value="@Progress"/>
+}
+
 <h3>Product Report</h3>
 
 @if (_reportCreated)
@@ -25,11 +30,20 @@
         <ItemsOverview Title="Completed" Items="@ClosedItems"/>
     </div>
 }
-else if (_selectedProduct != null)
-{
-    <div>Creating product report...</div>
-}
 else if (_selectedProduct == null)
 {
     <div class="information">No Product selected! Please select a Product!</div>
 }
+else if (!_reportCreated)
+{
+    <div class="information">
+        <div class="d-flex align-items-center">
+            <div class="spinner-border ml-auto text-primary" role="status" aria-hidden="true" width="100vw"></div>
+            <div>
+                <strong>Creating product report..</strong>
+            </div>
+        </div>
+    </div>
+
+}
+

@@ -42,9 +42,6 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Pages.Scrum
         
         [Inject] 
         private ILogger<SprintReport> Logger { get; set; } = default!;
-
-        [Inject]
-        private ProductConfig ProductConfig { get; set; } = default!;
         
         [Inject] 
         private ISprintRepository SprintRepository { get; set; } = default!;

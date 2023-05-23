@@ -19,9 +19,6 @@ public partial class ProductSelection
     [Inject] 
     private IProductRepository ProductRepository { get; set; } = default!;
     
-    [Inject]
-    private ProductConfig ProductConfig { get; set; } = default!;
-    
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync().ConfigureAwait(false);

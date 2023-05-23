@@ -2,14 +2,5 @@
 
 internal class WorkflowConfig : IWorkflowConfig
 {
-    public string[] Workflow { get; set; } =
-    {
-        "Opened",
-        "Doing",
-        "CodeReview",
-        "Test",
-        "Acceptance",
-        "Accepted",
-        "Closed"
-    };
+    public string[] Workflow { get; set; }
 }

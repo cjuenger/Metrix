@@ -22,7 +22,9 @@ namespace Io.Juenger.Scrum.Metrix.WebUI.Shared.Scrum
         {
             await base.OnParametersSetAsync().ConfigureAwait(false);
             
-            _maxYValue = BurnDown?.BurnDownSeries.Select(bd => bd.Y).Max() + 5 ?? 0;
+            _maxYValue = BurnDown?.BurnDownSeries.Any() ?? false
+                ? BurnDown?.BurnDownSeries.Select(bd => bd.Y).Max() + 5 ?? 0
+                : 5;
 
             CalculateDueLine();
         }

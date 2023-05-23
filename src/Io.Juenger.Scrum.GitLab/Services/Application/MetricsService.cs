@@ -1,4 +1,5 @@
-﻿using Io.Juenger.Common.Util;
+﻿using System.Diagnostics.CodeAnalysis;
+using Io.Juenger.Common.Util;
 using Io.Juenger.Scrum.GitLab.Contracts.Entities;
 using Io.Juenger.Scrum.GitLab.Contracts.Values;
 using Io.Juenger.Scrum.GitLab.Services.Domain;
@@ -306,19 +307,21 @@ internal class MetricsService : IMetricsService
     private static TimeSpan GetAverageThroughputTime(ICollection<long> ticks)
     {
         var totalThroughputTimeAsTicks = ticks.Sum();
-        var averageThroughputTimeAsTicks = totalThroughputTimeAsTicks / ticks.Count;
+        var averageThroughputTimeAsTicks = ticks.Count > 0 ? totalThroughputTimeAsTicks / ticks.Count : 0;
         return TimeSpan.FromTicks(averageThroughputTimeAsTicks);
     }
 
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     private static TimeSpan GetMaxThroughputTime(IEnumerable<long> ticks)
     {
-        var throughputTimesAsTicks = ticks.Max();
+        var throughputTimesAsTicks = ticks.Any() ? ticks.Max() : 0;
         return TimeSpan.FromTicks(throughputTimesAsTicks);
     }
     
+    [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
     private static TimeSpan GetMinThroughputTime(IEnumerable<long> ticks)
     {
-        var throughputTimesAsTicks = ticks.Min();
+        var throughputTimesAsTicks = ticks.Any() ? ticks.Min() : 0;
         return TimeSpan.FromTicks(throughputTimesAsTicks);
     }
 }
