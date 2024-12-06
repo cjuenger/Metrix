@@ -10,7 +10,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Io.Juenger.Scrum.GitLab\Io.Juenger.Scrum.GitLab.csproj" />
+      <ProjectReference Include="..\Metrix.Adapter.GitLab\Metrix.Adapter.GitLab.csproj" />
     </ItemGroup>
 
     <ItemGroup>

@@ -2,9 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Common", "Io.Juenger.Common\Io.Juenger.Common.csproj", "{52D99C57-016F-4235-A59E-98E8D9617CD0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab", "Io.Juenger.Scrum.GitLab\Io.Juenger.Scrum.GitLab.csproj", "{00F484F4-5FD9-45AA-8037-60CBA569FDA9}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Contracts", "Io.Juenger.Scrum.GitLab.Contracts\Io.Juenger.Scrum.GitLab.Contracts.csproj", "{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Adapter.GitLab", "Metrix.Adapter.GitLab\Metrix.Adapter.GitLab.csproj", "{00F484F4-5FD9-45AA-8037-60CBA569FDA9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Io.Juenger.Scrum.GitLab.Demo", "Io.Juenger.Scrum.GitLab.Demo\Io.Juenger.Scrum.GitLab.Demo.csproj", "{F505030D-D57F-4981-BA5F-0F5A6117760C}"
 EndProject
@@ -16,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		..\.gitignore = ..\.gitignore
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metrix.Core", "Metrix.Core\Metrix.Core.csproj", "{69BD7586-E49A-4D03-8AA0-A25D9C2A1A4A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,10 +31,6 @@ Global
 		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{00F484F4-5FD9-45AA-8037-60CBA569FDA9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{142F2002-D7F6-45C2-A19D-0FB4CA06FE5F}.Release|Any CPU.Build.0 = Release|Any CPU
 		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F505030D-D57F-4981-BA5F-0F5A6117760C}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -47,5 +43,9 @@ Global
 		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C01316B5-9DC6-4CFC-BC19-76F284641D6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69BD7586-E49A-4D03-8AA0-A25D9C2A1A4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69BD7586-E49A-4D03-8AA0-A25D9C2A1A4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69BD7586-E49A-4D03-8AA0-A25D9C2A1A4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69BD7586-E49A-4D03-8AA0-A25D9C2A1A4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

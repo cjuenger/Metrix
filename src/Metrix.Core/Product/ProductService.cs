@@ -1,0 +1,196 @@
+﻿using Io.Juenger.Scrum.GitLab.Factories.Application;
+using Metrix.Core.Entities;
+using Metrix.Core.Repositories;
+using Metrix.Core.Values;
+
+namespace Metrix.Core.Services;
+
+internal class ProductService : IProductService, IProductVelocityService
+{
+    private readonly IMetricsService _metricsService;
+    private readonly ISprintRepository _sprintRepository;
+    private readonly IItemsRepository _itemsRepository;
+    private readonly IWorkflowFactory _workflowFactory;
+
+    public ProductService(
+        IMetricsService metricsService,
+        ISprintRepository sprintRepository,
+        IItemsRepository itemsRepository,
+        IWorkflowFactory workflowFactory)
+    {
+        _metricsService = metricsService ?? throw new ArgumentNullException(nameof(metricsService));
+        _sprintRepository = sprintRepository ?? throw new ArgumentNullException(nameof(sprintRepository));
+        _itemsRepository = itemsRepository ?? throw new ArgumentNullException(nameof(itemsRepository));
+        _workflowFactory = workflowFactory ?? throw new ArgumentNullException(nameof(workflowFactory));
+    }
+    
+    #region Metrics
+
+    public async Task<VelocityValue> CalculateVelocityAsync(
+        string productId, 
+        CancellationToken cancellationToken = default)
+    {
+        var sprints = await _sprintRepository
+            .LoadSprintsAsync(productId, ct: cancellationToken);
+
+        var sprintVelocityValues = new List<SprintVelocityValue>();
+        foreach (var sprint in sprints)
+        {
+            var items = await _itemsRepository
+                .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
+
+            var totalStoryPoints = items
+                .OfType<StoryEntity>()
+                .Where(st => st.ClosedAt.HasValue)
+                .Where(st => st.StoryPoints is > 0)
+                .Sum(st => st.StoryPoints ?? 0);
+            
+            if(totalStoryPoints <= 0) continue;
+
+            var sprintVelocity = new SprintVelocityValue(totalStoryPoints, sprint.Length);
+            
+            sprintVelocityValues.Add(sprintVelocity);
+        }
+
+        return _metricsService.CalculateVelocity(sprintVelocityValues);
+    }
+
+    public async Task<VelocityTrendValue> CalculateVelocityTrendAsync(
+        string productId, 
+        CancellationToken cancellationToken = default)
+    {
+        var sprints = await _sprintRepository
+            .LoadSprintsAsync(productId, ct: cancellationToken);
+        
+        var sprintVelocityValues = new List<SprintVelocityValue>();
+        foreach (var sprint in sprints)
+        {
+            var items = await _itemsRepository
+                .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
+
+            var totalStoryPoints = items
+                .OfType<StoryEntity>()
+                .Sum(st => st.StoryPoints ?? 0);
+
+            var sprintVelocity = new SprintVelocityValue(totalStoryPoints, sprint.Length);
+            
+            sprintVelocityValues.Add(sprintVelocity);
+        }
+        
+        return _metricsService.CalculateVelocityTrend(sprintVelocityValues);
+    }
+
+    public async Task<CompositionValue> CalculateCompositionAsync(
+        string productId, 
+        CancellationToken cancellationToken = default)
+    {
+        var items = await _itemsRepository
+            .LoadProductItemsAsync(productId, ct: cancellationToken);
+        
+        return _metricsService.CalculateComposition(items);
+    }
+
+    public async Task<CompositionTrendValue> CalculateCompositionTrendAsync(
+        string productId,
+        CancellationToken cancellationToken = default)
+    {
+        var sprints = await _sprintRepository
+            .LoadSprintsAsync(productId, ct: cancellationToken);
+
+        var orderedSprints = sprints.OrderBy(sp => sp.StartTime);
+
+        var compositionValues = new List<XyValue<string, CompositionValue>>();
+        foreach (var sprint in orderedSprints)
+        {
+            var itemsOfSprint = await _itemsRepository
+                .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
+
+            var compositionValue = _metricsService.CalculateComposition(itemsOfSprint);
+            compositionValues.Add(new XyValue<string, CompositionValue>
+            {
+                X = sprint.Name,
+                Y = compositionValue
+            });
+        }
+
+        return new CompositionTrendValue(compositionValues);
+    }
+
+    public async Task<BurnDownValue> CalculateBurnDownAsync(
+        string productId, 
+        CancellationToken cancellationToken = default)
+    {
+        var sprints = await _sprintRepository
+            .LoadSprintsAsync(productId, ct: cancellationToken);
+
+        var orderedSprints = sprints.OrderBy(sp => sp.StartTime);
+        
+        var sprintVelocityValues = new List<SprintVelocityValue>();
+
+        foreach (var sprint in orderedSprints)
+        {
+            var itemsOfSprint = await _itemsRepository
+                .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
+
+            var totalStoryPoints = itemsOfSprint
+                .OfType<StoryEntity>()
+                .Sum(st => st.StoryPoints ?? 0);
+
+            var sprintVelocity = new SprintVelocityValue(totalStoryPoints, sprint.Length);
+            
+            sprintVelocityValues.Add(sprintVelocity);
+        }
+
+        var velocityValue = _metricsService.CalculateVelocity(sprintVelocityValues);
+        
+        var productItems = await _itemsRepository
+            .LoadProductItemsAsync(productId, ct: cancellationToken);
+        
+        var burnDownValue = _metricsService.CalculateBurnDown(productItems, velocityValue);
+        return burnDownValue;
+    }
+
+    public async Task<BurnUpValue> CalculateBurnUpAsync(
+        string productId, 
+        CancellationToken cancellationToken = default)
+    {
+        var items = await _itemsRepository
+            .LoadProductItemsAsync(productId, ct: cancellationToken);
+        
+        return _metricsService.CalculateBurnUp(items);
+    }
+
+    public async Task<CycleTimesValue> CalculateCycleTimesAsync(
+        string productId, 
+        CancellationToken cancellationToken = default)
+    {
+        var items = await _itemsRepository
+            .LoadProductItemsAsync(productId, ct: cancellationToken);
+        
+        return _metricsService.CalculateCycleTime(items);
+    }
+    
+    public async Task<ProductStatusValue> CalculateProductStatusAsync(
+        string productId,
+        CancellationToken cancellationToken = default)
+    {
+        var workflow = _workflowFactory.Workflow;
+        
+        var itemEntities = await _itemsRepository
+            .LoadProductItemsAsync(productId, ct: cancellationToken);
+
+        var openStoryPoints = itemEntities
+            .OfType<StoryEntity>()
+            .Where(s => s.WorkflowState.Name != workflow.WorkflowStates.Last().Name)
+            .Sum(s => s.StoryPoints ?? 0);
+
+        var completedStoryPoints = itemEntities
+            .OfType<StoryEntity>()
+            .Where(s => s.WorkflowState.Name == workflow.WorkflowStates.Last().Name)
+            .Sum(s => s.StoryPoints ?? 0);
+
+        return new ProductStatusValue(completedStoryPoints, openStoryPoints);
+    }
+
+    #endregion
+}
