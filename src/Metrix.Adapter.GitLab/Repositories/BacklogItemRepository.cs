@@ -5,13 +5,13 @@ using Metrix.Core.BacklogItem;
 
 namespace Io.Juenger.Scrum.GitLab.Repositories
 {
-    internal class IBacklogItemRepository : IBacklogItemRepository
+    internal class BacklogItemRepository : IBacklogItemRepository
     {
         private readonly IProjectApiFactory _projectApiFactory;
         private readonly IPaginationService _paginationService;
         private readonly IItemParserService _itemParserService;
 
-        public IBacklogItemRepository(
+        public BacklogItemRepository(
             IProjectApiFactory projectApiFactory,
             IPaginationService paginationService,
             IItemParserService itemParserService)

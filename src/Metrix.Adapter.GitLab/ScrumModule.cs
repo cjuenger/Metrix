@@ -27,7 +27,7 @@ namespace Io.Juenger.Scrum.GitLab
         private static void RegisterRepositories(ContainerBuilder builder)
         {
             builder
-                .RegisterType<IBacklogItemRepository>()
+                .RegisterType<BacklogItemRepository>()
                 .As<IItemsRepository>()
                 .SingleInstance();
 
