@@ -3,8 +3,7 @@ using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Factories;
 using Io.Juenger.Scrum.GitLab.Services.Infrastructure;
-using Metrix.Core.Aggregates;
-using Metrix.Core.Repositories;
+using Metrix.Core.Sprint;
 using Microsoft.Extensions.Logging;
 
 namespace Io.Juenger.Scrum.GitLab.Repositories

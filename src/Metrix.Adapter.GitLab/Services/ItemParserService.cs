@@ -1,8 +1,9 @@
 ﻿using System.Text.RegularExpressions;
 using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Configs;
-using Metrix.Core.Entities;
+using Metrix.Core.BacklogItem;
 using Metrix.Core.Values;
+using Metrix.Core.Workflow;
 
 namespace Io.Juenger.Scrum.GitLab.Services.Domain
 {
@@ -15,9 +16,9 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
             _config = config ?? throw new ArgumentNullException(nameof(config));
         }
         
-        public ItemEntity Parse(Issue issue)
+        public BacklogItem Parse(Issue issue)
         {
-            ItemEntity item;
+            BacklogItem backlogItem;
 
             var state = GetItemState(issue);
             
@@ -25,7 +26,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
             {
                 var hasStoryPoints = TryGetStoryPoints(issue, out var storyPoints);
 
-                item = new StoryEntity
+                backlogItem = new Story
                 {   
                     Title = issue.Title,
                     StoryPoints = hasStoryPoints ? storyPoints : null,
@@ -38,7 +39,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
             }
             else if (IsBug(issue))
             {
-                item = new BugEntity
+                backlogItem = new Bug
                 {
                     Title = issue.Title,
                     Description = issue.Description,
@@ -50,7 +51,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
             } 
             else
             {
-                item = new ItemEntity
+                backlogItem = new BacklogItem
                 {
                     Title = issue.Title,
                     Description = issue.Description,
@@ -61,7 +62,7 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
                 };
             }
 
-            return item;
+            return backlogItem;
         }
 
         private bool TryGetStoryPoints(Issue issue, out int storyPoints)
@@ -91,21 +92,21 @@ namespace Io.Juenger.Scrum.GitLab.Services.Domain
             return Convert.ToInt32(split[0]);
         }
 
-        private WorkflowStateValue GetItemState(Issue issue)
+        private WorkflowState GetItemState(Issue issue)
         {
             var state =  _config.WorkflowMapping.Values.First();
 
             if (issue.ClosedAt != null)
             {
                 state = _config.WorkflowMapping.Values.Last();
-                return new WorkflowStateValue(state);
+                return new WorkflowState(state);
             } 
             
             var workflowState = issue.Labels
                 .Intersect(_config.WorkflowMapping.Keys)
                 .FirstOrDefault();
 
-            return workflowState != null ? new WorkflowStateValue(workflowState) : new WorkflowStateValue(state);
+            return workflowState != null ? new WorkflowState(workflowState) : new WorkflowState(state);
         }
     }
 }

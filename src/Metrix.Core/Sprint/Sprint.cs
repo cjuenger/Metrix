@@ -1,5 +1,8 @@
-﻿namespace Metrix.Core.Aggregates
+﻿using NMolecules.DDD;
+
+namespace Metrix.Core.Sprint
 {
+    [AggregateRoot]
     public class Sprint
     {
         /// <summary>

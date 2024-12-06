@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Io.Juenger.GitLabClient.Model;
-using Metrix.Core.Aggregates;
+using Metrix.Core.Product;
 
 namespace Io.Juenger.Scrum.GitLab.Mappings;
 

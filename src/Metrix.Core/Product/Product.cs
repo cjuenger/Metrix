@@ -1,6 +1,6 @@
 ﻿using NMolecules.DDD;
 
-namespace Metrix.Core.Aggregates;
+namespace Metrix.Core.Product;
 
 [AggregateRoot]
 public class Product

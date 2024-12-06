@@ -1,6 +1,4 @@
-﻿using Metrix.Core.Aggregates;
-
-namespace Metrix.Core.Repositories;
+﻿namespace Metrix.Core.Sprint;
 
 public interface ISprintRepository
 {

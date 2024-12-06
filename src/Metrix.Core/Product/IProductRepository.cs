@@ -1,12 +1,10 @@
-﻿using Metrix.Core.Aggregates;
-
-namespace Metrix.Core.Repositories;
+﻿namespace Metrix.Core.Product;
 
 public interface IProductRepository
 {
-    public Task<IEnumerable<Product>> LoadProductsAsync(CancellationToken cancellationToken = default);
+    public Task<IEnumerable<Core.Product.Product>> LoadProductsAsync(CancellationToken cancellationToken = default);
 
-    Task<Product> LoadProductAsync(
+    Task<Core.Product.Product> LoadProductAsync(
         string productId,
         CancellationToken cancellationToken = default);
 }

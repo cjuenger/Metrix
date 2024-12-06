@@ -1,8 +1,6 @@
 ﻿using Io.Juenger.GitLabClient.Model;
 using Io.Juenger.Scrum.GitLab.Factories;
 using Io.Juenger.Scrum.GitLab.Services.Infrastructure;
-using Metrix.Core.Aggregates;
-using Metrix.Core.Repositories;
 
 namespace Io.Juenger.Scrum.GitLab.Repositories
 {

@@ -4,11 +4,11 @@ using AutoMapper;
 using Io.Juenger.Autoconf;
 using Io.Juenger.Scrum.GitLab.Configs;
 using Io.Juenger.Scrum.GitLab.Factories;
-using Io.Juenger.Scrum.GitLab.Factories.Application;
 using Io.Juenger.Scrum.GitLab.Mappings;
 using Io.Juenger.Scrum.GitLab.Repositories;
 using Io.Juenger.Scrum.GitLab.Services.Domain;
 using Io.Juenger.Scrum.GitLab.Services.Infrastructure;
+using Metrix.Core.Workflow;
 
 namespace Io.Juenger.Scrum.GitLab
 {
@@ -27,7 +27,7 @@ namespace Io.Juenger.Scrum.GitLab
         private static void RegisterRepositories(ContainerBuilder builder)
         {
             builder
-                .RegisterType<ItemsRepository>()
+                .RegisterType<IBacklogItemRepository>()
                 .As<IItemsRepository>()
                 .SingleInstance();
 
