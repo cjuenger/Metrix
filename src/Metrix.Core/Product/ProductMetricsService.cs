@@ -2,7 +2,6 @@
 using Metrix.Core.Metrics;
 using Metrix.Core.Metrics.Values;
 using Metrix.Core.Sprint;
-using Metrix.Core.Values;
 using Metrix.Core.Workflow;
 using NMolecules.DDD;
 

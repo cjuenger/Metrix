@@ -1,5 +1,4 @@
-﻿using Metrix.Core.Values;
-using NMolecules.DDD;
+﻿using NMolecules.DDD;
 
 namespace Metrix.Core.Metrics.Values;
 

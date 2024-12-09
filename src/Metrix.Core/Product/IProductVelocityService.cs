@@ -1,5 +1,4 @@
 ﻿using Metrix.Core.Metrics.Values;
-using Metrix.Core.Values;
 
 namespace Metrix.Core.Product;
 

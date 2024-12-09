@@ -1,5 +1,4 @@
-﻿using Metrix.Core.Values;
-using Metrix.Core.Workflow;
+﻿using Metrix.Core.Workflow;
 using NMolecules.DDD;
 
 namespace Metrix.Core.BacklogItem;
