@@ -88,7 +88,8 @@ internal class MetricsService : IMetricsService
 
     public BurnDown CalculateBurnDown(
         IEnumerable<BacklogItem.BacklogItem> itemEntities,
-        Velocity velocity)
+        Velocity velocity,
+        ProductCalendar productCalendar)
     {
         var stories = itemEntities.OfType<Story>().ToList();
             
@@ -96,15 +97,18 @@ internal class MetricsService : IMetricsService
             
         var estimateSeries = CalculateBurnDownEstimationChartSeries(
             burnDownSeries, 
-            velocity.Last5SprintsDayAverageVelocity);
+            velocity.Last5SprintsDayAverageVelocity,
+            productCalendar);
             
         var bestEstimateSeries = CalculateBurnDownEstimationChartSeries(
             burnDownSeries, 
-            velocity.Best3SprintsDayAverageVelocity);
+            velocity.Best3SprintsDayAverageVelocity,
+            productCalendar);
             
         var worstEstimateSeries = CalculateBurnDownEstimationChartSeries(
             burnDownSeries, 
-            velocity.Worst3SprintsDayAverageVelocity);
+            velocity.Worst3SprintsDayAverageVelocity,
+            productCalendar);
         
         var burnDownValue = new BurnDown(
             burnDownSeries, 
@@ -260,7 +264,8 @@ internal class MetricsService : IMetricsService
 
     private IEnumerable<XyValue<DateTime, int>> CalculateBurnDownEstimationChartSeries(
         IEnumerable<XyValue<DateTime, int>> burnDownSeries, 
-        float velocityPerDay)
+        float velocityPerDay,
+        ProductCalendar productCalendar)
     {
         var lastBurnDown = burnDownSeries.LastOrDefault();
         
@@ -281,11 +286,11 @@ internal class MetricsService : IMetricsService
             velocityPerDay);
 
         // TODO: 20220212 CJ: Consider hours of a work day!
-        var dueDate = lastBurnDown.X.GetBusinessDueDate(daysToGo);
+        var dueDate = productCalendar.PredictDueDate(new BusinessDay(lastBurnDown.X), TimeSpan.FromDays(daysToGo));
         
         var estimatedXy = new XyValue<DateTime, int>
         {
-            X = dueDate,
+            X = dueDate.Date,
             Y = 0
         };
 

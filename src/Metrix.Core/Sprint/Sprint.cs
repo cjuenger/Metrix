@@ -5,6 +5,29 @@ namespace Metrix.Core.Sprint
     [AggregateRoot]
     public class Sprint
     {
+        public Sprint(
+            string productId,
+            int id, 
+            string name, 
+            DateTime start, 
+            DateTime end)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+            }
+            if (string.IsNullOrWhiteSpace(productId))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(productId));
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
+
+            ProductId = productId;
+            Id = id;
+            Name = name;
+            StartTime = start;
+            EndTime = end;
+        }
+        
         /// <summary>
         ///     Id of the sprint
         /// </summary>
@@ -32,27 +55,11 @@ namespace Metrix.Core.Sprint
         /// </summary>
         public int Length => GetSprintLength();
 
-        public Sprint(
-            string productId,
-            int id, 
-            string name, 
-            DateTime start, 
-            DateTime end)
+        public int BusinessDaysOfSprint(ProductCalendar productCalendar)
         {
-            if (string.IsNullOrWhiteSpace(name))
-            {
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
-            }
-            if (string.IsNullOrWhiteSpace(productId))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(productId));
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Value cannot be null or whitespace.", nameof(name));
-
-            ProductId = productId;
-            Id = id;
-            Name = name;
-            StartTime = start;
-            EndTime = end;
+            var start = new BusinessDay(StartTime);
+            var end = new BusinessDay(EndTime);
+            return productCalendar.BusinessDaysWithin(start, end);
         }
         
         private int GetSprintLength()

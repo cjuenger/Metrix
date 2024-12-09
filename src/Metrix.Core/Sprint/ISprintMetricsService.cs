@@ -5,7 +5,7 @@ namespace Metrix.Core.Sprint;
 public interface ISprintMetricsService
 {
     Task<Composition> CalculateCompositionAsync(string productId, int sprintId, CancellationToken cancellationToken = default);
-    Task<BurnDown> CalculateBurnDownAsync(string productId, int sprintId, CancellationToken cancellationToken = default);
+    Task<BurnDown> CalculateBurnDownAsync(string productId, int sprintId, ProductCalendar productCalendar, CancellationToken cancellationToken = default);
     Task<BurnUp> CalculateBurnUpAsync(string productId, int sprintId, CancellationToken cancellationToken = default);
     Task<CycleTimesValue> CalculateCycleTimesAsync(string productId, int sprintId, CancellationToken cancellationToken = default);
 

@@ -48,6 +48,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
             
             if(totalStoryPoints <= 0) continue;
 
+            // TODO: 20241209 CB: Consider to use count of business days instead of length here (or sprint weeks)!
             var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.Length);
             
             sprintVelocityValues.Add(sprintVelocity);
@@ -73,6 +74,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
                 .OfType<Story>()
                 .Sum(st => st.StoryPoints ?? 0);
 
+            // TODO: 20241209 CB: Consider to use count of business days instead of length here (or sprint weeks)!
             var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.Length);
             
             sprintVelocityValues.Add(sprintVelocity);
@@ -119,6 +121,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
 
     public async Task<BurnDown> CalculateBurnDownAsync(
         string productId, 
+        ProductCalendar productCalendar, 
         CancellationToken cancellationToken = default)
     {
         var sprints = await _sprintRepository
@@ -137,6 +140,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
                 .OfType<Story>()
                 .Sum(st => st.StoryPoints ?? 0);
 
+            // TODO: 20241209 CB: Consider to use count of business days instead of length here (or sprint weeks)!
             var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.Length);
             
             sprintVelocityValues.Add(sprintVelocity);
@@ -147,7 +151,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         var productItems = await _iBacklogItemRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
         
-        var burnDownValue = _metricsService.CalculateBurnDown(productItems, velocityValue);
+        var burnDownValue = _metricsService.CalculateBurnDown(productItems, velocityValue, productCalendar);
         return burnDownValue;
     }
 

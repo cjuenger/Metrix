@@ -13,11 +13,15 @@ internal class WorkflowFactory : IWorkflowFactory
 
     private Workflow CreateWorkflow()
     {
-        var workflowStates = _workflowConfig.Workflow
-            .Select(workflowItem => new WorkflowState(workflowItem))
-            .ToList();
+        // TODO: 20241209 CB: Implement!
 
-        var workflow = new Workflow(workflowStates);
-        return workflow;
+        throw new NotImplementedException();
+
+        // var workflowStates = _workflowConfig.Workflow
+        //     .Select(workflowItem => new WorkflowState(workflowItem))
+        //     .ToList();
+        //
+        // var workflow = new Workflow(workflowStates);
+        // return workflow;
     }
 }

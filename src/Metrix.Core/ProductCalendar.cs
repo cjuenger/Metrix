@@ -1,4 +1,5 @@
-﻿using NMolecules.DDD;
+﻿using System.Collections.ObjectModel;
+using NMolecules.DDD;
 
 namespace Metrix.Core;
 
@@ -37,15 +38,24 @@ public class ProductCalendar
         
         return new BusinessDay(dateTime);
     }
-    
-    public int CountBusinessDaysUntil(BusinessDay until)
+
+    public int BusinessDaysWithin(BusinessDay from, BusinessDay until)
     {
+        // TODO: 20241209 CB: Implement!
+        throw new NotImplementedException();
+    }
+    
+    public int TotalBusinessDays()
+    {
+        // TODO: 20241209 CB: Revise this!!!
+        throw new NotImplementedException();
+        
         var kickOffTime = _kickOffTime.Date;
-        var untilTime = until.Date;
+        var untilTime = _dueTime.Date;
         
         if (kickOffTime > untilTime)
         {
-            throw new ArgumentException("Incorrect last day " + until);
+            throw new ArgumentException("Incorrect last day " + _dueTime);
         }
 
         var span = untilTime - kickOffTime;
@@ -99,11 +109,6 @@ public class ProductCalendar
         }
 
         return businessDays;
-    }
-
-    public DateTime PredictDueDateFromNow(TimeSpan remainingTotalWorkTime)
-    {
-        throw new NotImplementedException();
     }
     
     public BusinessDay PredictDueDate(BusinessDay from, TimeSpan remainingTotalWorkTime)
@@ -161,54 +166,11 @@ public class ProductCalendar
         return _excludeDates.Any(ed => ed.Date == date.Date);
     }
 
-    private IReadOnlyCollection<DateTime> ExcludedDatesWithin(DateTime from, DateTime until)
+    private ReadOnlyCollection<DateTime> ExcludedDatesWithin(DateTime from, DateTime until)
     {
         return _excludeDates
             .Where(ed => ed.Date >= from.Date && ed.Date <= until.Date)
             .ToList()
             .AsReadOnly();
     }
-    
-    // private int CountOfExcludedDaysWithin(DateTime from, DateTime until)
-    // {
-    //     // var fullWeekCount = (int) totalDays / 7;
-    //     // var remainingDays = (int) totalDays % 7;
-    //     //     
-    //     // var countOfExcludedDates = fullWeekCount * 2;
-    //     //
-    //     // var currentEndDate = startDate;
-    //     //     
-    //     // if (countOfExcludedDates > 0)
-    //     // {
-    //     //     currentEndDate = startDate.AddDays((int) totalDays + countOfExcludedDates - 1);
-    //     //     countOfExcludedDates += excludeDates.Count(d => d >= startDate && d <= currentEndDate);
-    //     // }
-    //     //
-    //     // if (remainingDays == 1)
-    //     // {
-    //     //     if (startDate.DayOfWeek == DayOfWeek.Saturday || startDate.DayOfWeek == DayOfWeek.Sunday )
-    //     //     {
-    //     //         countOfExcludedDates++;
-    //     //     }
-    //     // }
-    //     // else if (remainingDays > 1)
-    //     // {
-    //     //     var endDate = currentEndDate + TimeSpan.FromDays(remainingDays - 1);
-    //     //     var businessDays = currentEndDate.GetBusinessDaysUntil(endDate);
-    //     //     var daysToAdd = remainingDays - businessDays;
-    //     //     countOfExcludedDates += daysToAdd;
-    //     //
-    //     //     return countOfExcludedDates;
-    //     // }
-    //     //
-    //     // return countOfExcludedDates;
-    // }
-    
-    // public static int GetWeekendDaysUntil(this DateTime startDate, DateTime endDate)
-    // {
-    //     var totalTime = endDate - startDate + TimeSpan.FromDays(1);
-    //     var totalDays = totalTime.TotalDays;
-    //     var daysInWeekend = startDate.GetCountOfExcludedDaysWithinBusinessDays(totalDays);
-    //     return daysInWeekend;
-    // }
 }

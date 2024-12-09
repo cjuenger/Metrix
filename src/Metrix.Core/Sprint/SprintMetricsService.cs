@@ -47,6 +47,7 @@ internal class SprintMetricsService : ISprintMetricsService
     public async Task<BurnDown> CalculateBurnDownAsync(
         string productId, 
         int sprintId, 
+        ProductCalendar productCalendar,
         CancellationToken cancellationToken = default)
     {
         var sprint = await _sprintRepository
@@ -61,7 +62,7 @@ internal class SprintMetricsService : ISprintMetricsService
 
         var velocityValue = await _productVelocityService.CalculateVelocityAsync(productId, cancellationToken);
 
-        return _metricsService.CalculateBurnDown(itemsOfSprint, velocityValue);
+        return _metricsService.CalculateBurnDown(itemsOfSprint, velocityValue, productCalendar);
     }
 
     public async Task<BurnUp> CalculateBurnUpAsync(
