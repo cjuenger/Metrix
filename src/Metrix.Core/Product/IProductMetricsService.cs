@@ -7,7 +7,7 @@ public interface IProductMetricsService
     public Task<Velocity> CalculateVelocityAsync(string productId, CancellationToken cancellationToken = default);
     public Task<VelocityTrend> CalculateVelocityTrendAsync(string productId, CancellationToken cancellationToken = default);
     Task<Composition> CalculateCompositionAsync(string productId, CancellationToken cancellationToken = default);
-    Task<BurnDown> CalculateBurnDownAsync(string productId, ProductCalendar productCalendar, CancellationToken cancellationToken = default);
+    Task<BurnDown> CalculateBurnDownAsync(string productId, CancellationToken cancellationToken = default);
     Task<BurnUp> CalculateBurnUpAsync(string productId, CancellationToken cancellationToken = default);
     Task<CycleTimesValue> CalculateCycleTimesAsync(string productId, CancellationToken cancellationToken = default);
 

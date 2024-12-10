@@ -2,6 +2,7 @@
 using Metrix.Core.Metrics;
 using Metrix.Core.Metrics.Values;
 using Metrix.Core.Product;
+using Metrix.Core.ProductCalendar;
 using Metrix.Core.Workflow;
 using NMolecules.DDD;
 
@@ -14,6 +15,7 @@ internal class SprintMetricsService : ISprintMetricsService
     private readonly ISprintRepository _sprintRepository;
     private readonly IBacklogItemRepository _iBacklogItemRepository;
     private readonly IProductVelocityService _productVelocityService;
+    private readonly IProductCalendarRepository _productCalendarRepository;
     private readonly IWorkflowFactory _workflowFactory;
 
     public SprintMetricsService(
@@ -21,12 +23,14 @@ internal class SprintMetricsService : ISprintMetricsService
         ISprintRepository sprintRepository,
         IBacklogItemRepository iBacklogItemRepository,
         IProductVelocityService productVelocityService,
+        IProductCalendarRepository productCalendarRepository,
         IWorkflowFactory workflowFactory)
     {
         _metricsService = metricsService ?? throw new ArgumentNullException(nameof(metricsService));
         _sprintRepository = sprintRepository ?? throw new ArgumentNullException(nameof(sprintRepository));
         _iBacklogItemRepository = iBacklogItemRepository ?? throw new ArgumentNullException(nameof(iBacklogItemRepository));
         _productVelocityService = productVelocityService ?? throw new ArgumentNullException(nameof(productVelocityService));
+        _productCalendarRepository = productCalendarRepository ?? throw new ArgumentNullException(nameof(productCalendarRepository));
         _workflowFactory = workflowFactory ?? throw new ArgumentNullException(nameof(workflowFactory));
     }
     
@@ -47,7 +51,6 @@ internal class SprintMetricsService : ISprintMetricsService
     public async Task<BurnDown> CalculateBurnDownAsync(
         string productId, 
         int sprintId, 
-        ProductCalendar productCalendar,
         CancellationToken cancellationToken = default)
     {
         var sprint = await _sprintRepository
@@ -59,9 +62,11 @@ internal class SprintMetricsService : ISprintMetricsService
         // NOTE, the burn down of a sprint is only relevant for the scope of the sprint.
         // Thus for this metric the creation time of each item must be changed to the start date of the sprint!
         foreach (var item in itemsOfSprint) item.CreatedAt = sprint.StartTime;
-
+        
         var velocityValue = await _productVelocityService.CalculateVelocityAsync(productId, cancellationToken);
 
+        var productCalendar = await _productCalendarRepository.LoadProductCalendarAsync(productId, cancellationToken);
+        
         return _metricsService.CalculateBurnDown(itemsOfSprint, velocityValue, productCalendar);
     }
 

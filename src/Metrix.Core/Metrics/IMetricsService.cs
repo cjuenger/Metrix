@@ -8,7 +8,7 @@ public interface IMetricsService
     Velocity CalculateVelocity(IReadOnlyCollection<SprintVelocity> sprintVelocityValues);
     VelocityTrend CalculateVelocityTrend(IReadOnlyCollection<SprintVelocity> sprintVelocityValues);
     Composition CalculateComposition(IReadOnlyCollection<BacklogItem.BacklogItem> itemEntities);
-    BurnDown CalculateBurnDown(IEnumerable<BacklogItem.BacklogItem> itemEntities, Velocity velocity, ProductCalendar productCalendar);
+    BurnDown CalculateBurnDown(IEnumerable<BacklogItem.BacklogItem> itemEntities, Velocity velocity, ProductCalendar.ProductCalendar productCalendar);
     BurnUp CalculateBurnUp(IEnumerable<BacklogItem.BacklogItem> itemEntities);
     CycleTimesValue CalculateCycleTime(IReadOnlyCollection<BacklogItem.BacklogItem> itemEntities);
 

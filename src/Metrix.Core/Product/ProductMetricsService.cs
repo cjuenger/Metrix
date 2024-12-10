@@ -1,6 +1,7 @@
 ﻿using Metrix.Core.BacklogItem;
 using Metrix.Core.Metrics;
 using Metrix.Core.Metrics.Values;
+using Metrix.Core.ProductCalendar;
 using Metrix.Core.Sprint;
 using Metrix.Core.Workflow;
 using NMolecules.DDD;
@@ -12,32 +13,37 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
 {
     private readonly IMetricsService _metricsService;
     private readonly ISprintRepository _sprintRepository;
-    private readonly IBacklogItemRepository _iBacklogItemRepository;
+    private readonly IBacklogItemRepository _backlogItemRepository;
+    private readonly IProductCalendarRepository _productCalendarRepository;
     private readonly IWorkflowFactory _workflowFactory;
 
     public ProductMetricsService(
         IMetricsService metricsService,
         ISprintRepository sprintRepository,
-        IBacklogItemRepository iBacklogItemRepository,
+        IBacklogItemRepository backlogItemRepository,
+        IProductCalendarRepository productCalendarRepository,
         IWorkflowFactory workflowFactory)
     {
         _metricsService = metricsService ?? throw new ArgumentNullException(nameof(metricsService));
         _sprintRepository = sprintRepository ?? throw new ArgumentNullException(nameof(sprintRepository));
-        _iBacklogItemRepository = iBacklogItemRepository ?? throw new ArgumentNullException(nameof(iBacklogItemRepository));
+        _backlogItemRepository = backlogItemRepository ?? throw new ArgumentNullException(nameof(backlogItemRepository));
+        _productCalendarRepository = productCalendarRepository ?? throw new ArgumentNullException(nameof(productCalendarRepository));
         _workflowFactory = workflowFactory ?? throw new ArgumentNullException(nameof(workflowFactory));
     }
 
     public async Task<Velocity> CalculateVelocityAsync(
-        string productId, 
+        string productId,
         CancellationToken cancellationToken = default)
     {
         var sprints = await _sprintRepository
             .LoadSprintsAsync(productId, ct: cancellationToken);
 
+        var productCalendar = await _productCalendarRepository.LoadProductCalendarAsync(productId, cancellationToken);
+        
         var sprintVelocityValues = new List<SprintVelocity>();
         foreach (var sprint in sprints)
         {
-            var items = await _iBacklogItemRepository
+            var items = await _backlogItemRepository
                 .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
 
             var totalStoryPoints = items
@@ -49,7 +55,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
             if(totalStoryPoints <= 0) continue;
 
             // TODO: 20241209 CB: Consider to use count of business days instead of length here (or sprint weeks)!
-            var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.Length);
+            var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.BusinessDaysOfSprint(productCalendar));
             
             sprintVelocityValues.Add(sprintVelocity);
         }
@@ -67,15 +73,17 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         var sprintVelocityValues = new List<SprintVelocity>();
         foreach (var sprint in sprints)
         {
-            var items = await _iBacklogItemRepository
+            var items = await _backlogItemRepository
                 .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
 
             var totalStoryPoints = items
                 .OfType<Story>()
                 .Sum(st => st.StoryPoints ?? 0);
 
+            var productCalendar = await _productCalendarRepository.LoadProductCalendarAsync(productId, cancellationToken);
+            
             // TODO: 20241209 CB: Consider to use count of business days instead of length here (or sprint weeks)!
-            var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.Length);
+            var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.BusinessDaysOfSprint(productCalendar));
             
             sprintVelocityValues.Add(sprintVelocity);
         }
@@ -87,7 +95,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         string productId, 
         CancellationToken cancellationToken = default)
     {
-        var items = await _iBacklogItemRepository
+        var items = await _backlogItemRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
         
         return _metricsService.CalculateComposition(items);
@@ -105,7 +113,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         var compositionValues = new List<XyValue<string, Composition>>();
         foreach (var sprint in orderedSprints)
         {
-            var itemsOfSprint = await _iBacklogItemRepository
+            var itemsOfSprint = await _backlogItemRepository
                 .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
 
             var compositionValue = _metricsService.CalculateComposition(itemsOfSprint);
@@ -120,8 +128,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
     }
 
     public async Task<BurnDown> CalculateBurnDownAsync(
-        string productId, 
-        ProductCalendar productCalendar, 
+        string productId,
         CancellationToken cancellationToken = default)
     {
         var sprints = await _sprintRepository
@@ -131,24 +138,26 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         
         var sprintVelocityValues = new List<SprintVelocity>();
 
+        var productCalendar = await _productCalendarRepository.LoadProductCalendarAsync(productId, cancellationToken);
+        
         foreach (var sprint in orderedSprints)
         {
-            var itemsOfSprint = await _iBacklogItemRepository
+            var itemsOfSprint = await _backlogItemRepository
                 .LoadProductItemsAsync(productId, ofSprint: sprint.Name, ct: cancellationToken);
 
             var totalStoryPoints = itemsOfSprint
                 .OfType<Story>()
                 .Sum(st => st.StoryPoints ?? 0);
-
+            
             // TODO: 20241209 CB: Consider to use count of business days instead of length here (or sprint weeks)!
-            var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.Length);
+            var sprintVelocity = new SprintVelocity(totalStoryPoints, sprint.BusinessDaysOfSprint(productCalendar));
             
             sprintVelocityValues.Add(sprintVelocity);
         }
 
         var velocityValue = _metricsService.CalculateVelocity(sprintVelocityValues);
         
-        var productItems = await _iBacklogItemRepository
+        var productItems = await _backlogItemRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
         
         var burnDownValue = _metricsService.CalculateBurnDown(productItems, velocityValue, productCalendar);
@@ -159,7 +168,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         string productId, 
         CancellationToken cancellationToken = default)
     {
-        var items = await _iBacklogItemRepository
+        var items = await _backlogItemRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
         
         return _metricsService.CalculateBurnUp(items);
@@ -169,7 +178,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
         string productId, 
         CancellationToken cancellationToken = default)
     {
-        var items = await _iBacklogItemRepository
+        var items = await _backlogItemRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
         
         return _metricsService.CalculateCycleTime(items);
@@ -181,7 +190,7 @@ internal class ProductMetricsService : IProductMetricsService, IProductVelocityS
     {
         var workflow = _workflowFactory.Workflow;
         
-        var itemEntities = await _iBacklogItemRepository
+        var itemEntities = await _backlogItemRepository
             .LoadProductItemsAsync(productId, ct: cancellationToken);
 
         var openStoryPoints = itemEntities

@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using Metrix.Core.BacklogItem;
 using Metrix.Core.Metrics.Values;
+using Metrix.Core.ProductCalendar;
 using Metrix.Core.Sprint;
 using Microsoft.Extensions.Logging;
 using NMolecules.DDD;
@@ -89,7 +90,7 @@ internal class MetricsService : IMetricsService
     public BurnDown CalculateBurnDown(
         IEnumerable<BacklogItem.BacklogItem> itemEntities,
         Velocity velocity,
-        ProductCalendar productCalendar)
+        ProductCalendar.ProductCalendar productCalendar)
     {
         var stories = itemEntities.OfType<Story>().ToList();
             
@@ -265,7 +266,7 @@ internal class MetricsService : IMetricsService
     private IEnumerable<XyValue<DateTime, int>> CalculateBurnDownEstimationChartSeries(
         IEnumerable<XyValue<DateTime, int>> burnDownSeries, 
         float velocityPerDay,
-        ProductCalendar productCalendar)
+        ProductCalendar.ProductCalendar productCalendar)
     {
         var lastBurnDown = burnDownSeries.LastOrDefault();
         

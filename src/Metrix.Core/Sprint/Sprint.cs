@@ -1,4 +1,5 @@
-﻿using NMolecules.DDD;
+﻿using Metrix.Core.ProductCalendar;
+using NMolecules.DDD;
 
 namespace Metrix.Core.Sprint
 {
@@ -50,22 +51,22 @@ namespace Metrix.Core.Sprint
         /// </summary>
         public DateTime EndTime { get; private set; }
         
-        /// <summary>
-        ///     Length of the sprint
-        /// </summary>
-        public int Length => GetSprintLength();
+        // /// <summary>
+        // ///     Length of the sprint
+        // /// </summary>
+        // public int Length => GetSprintLength();
 
-        public int BusinessDaysOfSprint(ProductCalendar productCalendar)
+        public int BusinessDaysOfSprint(ProductCalendar.ProductCalendar productCalendar)
         {
             var start = new BusinessDay(StartTime);
             var end = new BusinessDay(EndTime);
             return productCalendar.BusinessDaysWithin(start, end);
         }
         
-        private int GetSprintLength()
-        {
-            var businessDays = StartTime.GetBusinessDaysUntil(EndTime);
-            return businessDays;
-        }
+        // private int GetSprintLength()
+        // {
+        //     var businessDays = StartTime.GetBusinessDaysUntil(EndTime);
+        //     return businessDays;
+        // }
     }
 }

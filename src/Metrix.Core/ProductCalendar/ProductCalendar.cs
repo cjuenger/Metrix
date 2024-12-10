@@ -1,33 +1,35 @@
 ﻿using System.Collections.ObjectModel;
 using NMolecules.DDD;
 
-namespace Metrix.Core;
+namespace Metrix.Core.ProductCalendar;
 
-[ValueObject]
+[AggregateRoot]
 public class ProductCalendar
 {
-    private const int DaysPerWeek = 7;
-    
-    private readonly BusinessDay _kickOffTime;
-    private readonly BusinessDay _dueTime;
-    private readonly int _daysPerBusinessWeek;
-    private readonly float _dailyWorkHours;
+    private readonly BusinessDay _kickOffDate;
+    private readonly BusinessDay _dueDate;
+    private readonly Workday _workday;
+    private readonly Workweek _workweek;
     private readonly DateTime[] _excludeDates;
-
+    
     public ProductCalendar(
-        BusinessDay kickOffTime, 
-        BusinessDay dueTime,
-        int daysPerBusinessWeek = 5,
-        float dailyWorkHours = 8,
+        int calendarId,
+        BusinessDay kickOffDate, 
+        BusinessDay dueDate,
+        Workday workday,
+        Workweek workweek,
         params DateTime[] excludeDates)
     {
-        _kickOffTime = kickOffTime;
-        _dueTime = dueTime;
-        _daysPerBusinessWeek = daysPerBusinessWeek;
-        _dailyWorkHours = dailyWorkHours;
+        CalendarId = calendarId;
+        _kickOffDate = kickOffDate ?? throw new ArgumentNullException(nameof(kickOffDate));
+        _dueDate = dueDate ?? throw new ArgumentNullException(nameof(dueDate));
+        _workday = workday ?? throw new ArgumentNullException(nameof(workday));
+        _workweek = workweek ?? throw new ArgumentNullException(nameof(workweek));
         _excludeDates = excludeDates;
     }
 
+    public int CalendarId { get; }
+    
     public BusinessDay CreateBusinessDay(DateTime dateTime)
     {
         var isExcludedDate = _excludeDates.Any(ed => ed.Date == dateTime.Date);
@@ -50,12 +52,12 @@ public class ProductCalendar
         // TODO: 20241209 CB: Revise this!!!
         throw new NotImplementedException();
         
-        var kickOffTime = _kickOffTime.Date;
-        var untilTime = _dueTime.Date;
+        var kickOffTime = _kickOffDate.Date;
+        var untilTime = _dueDate.Date;
         
         if (kickOffTime > untilTime)
         {
-            throw new ArgumentException("Incorrect last day " + _dueTime);
+            throw new ArgumentException("Incorrect last day " + _dueDate);
         }
 
         var span = untilTime - kickOffTime;
@@ -113,32 +115,35 @@ public class ProductCalendar
     
     public BusinessDay PredictDueDate(BusinessDay from, TimeSpan remainingTotalWorkTime)
     {
-        var remainingHours = remainingTotalWorkTime.TotalHours % _dailyWorkHours;
-        var entireDaysOfWork = (int)(remainingTotalWorkTime.TotalHours / _dailyWorkHours);
+        var remainingHours = remainingTotalWorkTime.TotalHours % _workday.WorkHours;
+        var entireDaysOfWork = (int)(remainingTotalWorkTime.TotalHours / _workday.WorkHours);
+
+        // 
+        // entireDaysOfWork = entireDaysOfWork > 0 ? entireDaysOfWork - 1 : 0;
         
         // If there are remaining hours (meaning for example a half day) that day must be
         // added in total, as that day would be the final day.
         var additionalDayOfWork = remainingHours > 0 ? 1 : 0;
         
         var daysOfWork = entireDaysOfWork + additionalDayOfWork;
-        var weekendDays = DaysPerWeek - _daysPerBusinessWeek;
+        // var weekendDays = DaysPerWeek - _workweek.Workdays;
 
         // It is possible of course, that within a "business week" of work time there is one or more excluded dates.
         // If that is so, at least one weekend must be considered!
         var countOfExcludedDates = CountOfExcludedDatesWithin(from.Date, from.Date.AddDays(daysOfWork));
-        var isDueDateNotInThisCalendarWeek = daysOfWork + countOfExcludedDates >= _daysPerBusinessWeek;
+        var isDueDateNotInThisCalendarWeek = daysOfWork + countOfExcludedDates >= _workweek.Workdays;
 
         // From here on we calculate the calendar days
         var calendarDays = daysOfWork;
         if (isDueDateNotInThisCalendarWeek)
         {
-            var weekends = calendarDays / _daysPerBusinessWeek;
+            var weekends = calendarDays / _workweek.Workdays;
             
             // If there was an excluded date, that cause the due date not being in this calendar week,
             // we must consider at least one weekend!
             weekends = weekends <= 0 ? 1 : weekends;
             
-            var totalWeekendDays = weekends * weekendDays;
+            var totalWeekendDays = weekends * _workweek.WeekendDays;
             calendarDays += totalWeekendDays;
 
             countOfExcludedDates = CountOfExcludedDatesWithin(from.Date, from.Date.AddDays(calendarDays));
@@ -153,7 +158,7 @@ public class ProductCalendar
             calendarDays++;
         }
 
-        return new BusinessDay(from.Date.AddDays(calendarDays));
+        return new BusinessDay(from.DateTime.AddDays(calendarDays));
     }
 
     private int CountOfExcludedDatesWithin(DateTime from, DateTime until)

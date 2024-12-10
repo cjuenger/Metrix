@@ -1,9 +1,9 @@
 ﻿using NMolecules.DDD;
 
-namespace Metrix.Core;
+namespace Metrix.Core.ProductCalendar;
 
 [ValueObject]
-public class BusinessDay
+public record BusinessDay
 {
     public DateTime Date => DateTime.Date;
     public DateTime DateTime { get; }

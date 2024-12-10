@@ -2,9 +2,9 @@
 
 public interface IProductRepository
 {
-    public Task<IEnumerable<Core.Product.Product>> LoadProductsAsync(CancellationToken cancellationToken = default);
+    public Task<IEnumerable<Product>> LoadProductsAsync(CancellationToken cancellationToken = default);
 
-    Task<Core.Product.Product> LoadProductAsync(
+    Task<Product> LoadProductAsync(
         string productId,
         CancellationToken cancellationToken = default);
 }
