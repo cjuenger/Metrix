@@ -117,7 +117,8 @@ public class ProductCalendar
     {
         var entireDaysOfWork = (int) Math.Ceiling(remainingTotalWorkTime.TotalHours / _workday.WorkHours);
         
-        if (TimeOnly.FromDateTime(from.DateTime) <= _workday.RegularStart)
+        if (TimeOnly.FromDateTime(from.DateTime) <= _workday.RegularStart || 
+            remainingTotalWorkTime < TimeSpan.FromHours(_workday.WorkHours) && TimeOnly.FromDateTime(from.DateTime + remainingTotalWorkTime) <= _workday.RegularEnd )
         {
             entireDaysOfWork = entireDaysOfWork > 0 ? entireDaysOfWork - 1 : 0;
         }
