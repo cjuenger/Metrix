@@ -115,18 +115,14 @@ public class ProductCalendar
     
     public BusinessDay PredictDueDate(BusinessDay from, TimeSpan remainingTotalWorkTime)
     {
-        var remainingHours = remainingTotalWorkTime.TotalHours % _workday.WorkHours;
-        var entireDaysOfWork = (int)(remainingTotalWorkTime.TotalHours / _workday.WorkHours);
+        var entireDaysOfWork = (int) Math.Ceiling(remainingTotalWorkTime.TotalHours / _workday.WorkHours);
+        
+        if (TimeOnly.FromDateTime(from.DateTime) <= _workday.RegularStart)
+        {
+            entireDaysOfWork = entireDaysOfWork > 0 ? entireDaysOfWork - 1 : 0;
+        }
 
-        // 
-        // entireDaysOfWork = entireDaysOfWork > 0 ? entireDaysOfWork - 1 : 0;
-        
-        // If there are remaining hours (meaning for example a half day) that day must be
-        // added in total, as that day would be the final day.
-        var additionalDayOfWork = remainingHours > 0 ? 1 : 0;
-        
-        var daysOfWork = entireDaysOfWork + additionalDayOfWork;
-        // var weekendDays = DaysPerWeek - _workweek.Workdays;
+        var daysOfWork = entireDaysOfWork;
 
         // It is possible of course, that within a "business week" of work time there is one or more excluded dates.
         // If that is so, at least one weekend must be considered!
