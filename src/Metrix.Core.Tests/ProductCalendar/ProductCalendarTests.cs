@@ -35,7 +35,7 @@ public class ProductCalendarTests
     [TestCase(8, 1)]
     [TestCase(9, 2)]
     [TestCase(32, 4)]
-    [TestCase(40, 7)]
+    [TestCase(40, 7)] // The remaining work time extends into the weekend. Thus, we expect 7 the finalization after 7 calendar days!
     public void PredictDueDate_Not_At_The_Very_Beginning_Of_Workday(int remainingWorkHours, int expectedDays)
     {
         const int calendarId = 1;
