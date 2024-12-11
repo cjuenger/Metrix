@@ -116,9 +116,15 @@ public class ProductCalendar
     public BusinessDay PredictDueDate(BusinessDay from, TimeSpan remainingTotalWorkTime)
     {
         var entireDaysOfWork = (int) Math.Ceiling(remainingTotalWorkTime.TotalHours / _workday.WorkHours);
+
+        var countOfExcludedDates = CountOfExcludedDatesWithin(from.Date, from.Date.AddDays(entireDaysOfWork));
         
-        if (TimeOnly.FromDateTime(from.DateTime) <= _workday.RegularStart || 
-            remainingTotalWorkTime < TimeSpan.FromHours(_workday.WorkHours) && TimeOnly.FromDateTime(from.DateTime + remainingTotalWorkTime) <= _workday.RegularEnd )
+        var isRemainingWorkWithinFirstDay = remainingTotalWorkTime < TimeSpan.FromHours(_workday.WorkHours) &&
+                                            TimeOnly.FromDateTime(from.DateTime + remainingTotalWorkTime) <= _workday.RegularEnd;
+
+        var isVeryStartOfFirstDay = TimeOnly.FromDateTime(from.DateTime) <= _workday.RegularStart;
+        
+        if (isVeryStartOfFirstDay || isRemainingWorkWithinFirstDay)
         {
             entireDaysOfWork = entireDaysOfWork > 0 ? entireDaysOfWork - 1 : 0;
         }
@@ -127,7 +133,6 @@ public class ProductCalendar
 
         // It is possible of course, that within a "business week" of work time there is one or more excluded dates.
         // If that is so, at least one weekend must be considered!
-        var countOfExcludedDates = CountOfExcludedDatesWithin(from.Date, from.Date.AddDays(daysOfWork));
         var isDueDateNotInThisCalendarWeek = daysOfWork + countOfExcludedDates >= _workweek.Workdays;
 
         // From here on we calculate the calendar days

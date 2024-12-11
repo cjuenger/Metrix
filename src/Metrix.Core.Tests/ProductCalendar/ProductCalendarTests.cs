@@ -56,4 +56,36 @@ public class ProductCalendarTests
         var predictedDueDate = sut.PredictDueDate(kickOffDate, TimeSpan.FromHours(remainingWorkHours));
         predictedDueDate.Should().Be(new BusinessDay(kickOffDate.DateTime + TimeSpan.FromDays(expectedDays)));
     }
+
+    [TestCase(8, 0)]
+    [TestCase(16, 4)]
+    [TestCase(24, 7)]
+    public void PredictDueDate_And_Consider_Excluded_Dates(int remainingWorkHours, int expectedDays)
+    {
+        const int calendarId = 1;
+        
+        var kickOffDate = new BusinessDay(new DateTime(2024, 12, 23, 0, 0, 0)); // Monday
+        var dueDate = new BusinessDay(new DateTime(2024,12,27)); // Friday
+
+        var workday = new Workday(new TimeOnly(8, 0), TimeSpan.FromMinutes(45), 8);
+        var workweek = new Workweek(5);
+
+        var excludedDates = new[]
+        {
+            new DateTime(2024,12,24),
+            new DateTime(2024,12,25),
+            new DateTime(2024,12,26),
+        };
+        
+        var sut = new Core.ProductCalendar.ProductCalendar(
+            calendarId, 
+            kickOffDate, 
+            dueDate, 
+            workday,
+            workweek,
+            excludedDates);
+        
+        var predictedDueDate = sut.PredictDueDate(kickOffDate, TimeSpan.FromHours(remainingWorkHours));
+        predictedDueDate.Should().Be(new BusinessDay(kickOffDate.DateTime + TimeSpan.FromDays(expectedDays)));
+    }
 }
