@@ -13,14 +13,14 @@ public class ProductCalendar
     private readonly DateTime[] _excludeDates;
     
     public ProductCalendar(
-        int calendarId,
+        ProductCalendarId productCalendarId,
         BusinessDay kickOffDate, 
         BusinessDay dueDate,
         Workday workday,
         Workweek workweek,
         params DateTime[] excludeDates)
     {
-        CalendarId = calendarId;
+        ProductCalendarId = productCalendarId;
         _kickOffDate = kickOffDate ?? throw new ArgumentNullException(nameof(kickOffDate));
         _dueDate = dueDate ?? throw new ArgumentNullException(nameof(dueDate));
         _workday = workday ?? throw new ArgumentNullException(nameof(workday));
@@ -28,7 +28,7 @@ public class ProductCalendar
         _excludeDates = excludeDates;
     }
 
-    public int CalendarId { get; }
+    public ProductCalendarId ProductCalendarId { get; }
     
     public BusinessDay CreateBusinessDay(DateTime dateTime)
     {
@@ -41,12 +41,6 @@ public class ProductCalendar
         return new BusinessDay(dateTime);
     }
 
-    public int BusinessDaysWithin(BusinessDay from, BusinessDay until)
-    {
-        // TODO: 20241209 CB: Implement!
-        throw new NotImplementedException();
-    }
-    
     public int TotalBusinessDays()
     {
         // TODO: 20241209 CB: Revise this!!!
@@ -113,6 +107,12 @@ public class ProductCalendar
         return businessDays;
     }
     
+    public static int BusinessDaysWithin(BusinessDay from, BusinessDay until)
+    {
+        // TODO: 20241209 CB: Implement!
+        throw new NotImplementedException();
+    }
+    
     public BusinessDay PredictDueDate(BusinessDay from, TimeSpan remainingTotalWorkTime)
     {
         var entireDaysOfWork = (int) Math.Ceiling(remainingTotalWorkTime.TotalHours / _workday.WorkHours);
@@ -152,15 +152,20 @@ public class ProductCalendar
             calendarDays += countOfExcludedDates;
         }
 
-        // Finally we must check, if the calculated due date is again an excluded date.
+        // We must check, if the calculated due date is again an excluded date or a weekend.
         // In that case we must increase the calendar days incrementally and check each new 
         // date if it is an excluded one.
-        while (IsExcludedDate(from.Date.AddDays(calendarDays)))
+        while (IsExcludedDate(from.Date.AddDays(calendarDays)) || IsWeekend(from.Date.AddDays(calendarDays)))
         {
             calendarDays++;
         }
 
         return new BusinessDay(from.DateTime.AddDays(calendarDays));
+    }
+
+    private static bool IsWeekend(DateTime date)
+    {
+        return date.DayOfWeek is DayOfWeek.Saturday or DayOfWeek.Sunday;
     }
 
     private int CountOfExcludedDatesWithin(DateTime from, DateTime until)

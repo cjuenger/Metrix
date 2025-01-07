@@ -60,7 +60,7 @@ namespace Metrix.Core.Sprint
         {
             var start = new BusinessDay(StartTime);
             var end = new BusinessDay(EndTime);
-            return productCalendar.BusinessDaysWithin(start, end);
+            return ProductCalendar.ProductCalendar.BusinessDaysWithin(start, end);
         }
         
         // private int GetSprintLength()
